@@ -7,6 +7,9 @@ from typing import Dict
 from nilearn.image import threshold_img
 from nilearn import plotting as nplot
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
+
 def get_roi_dict(mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .array is function to make type
     """This function returns a dict of the ROI masks
 
@@ -15,7 +18,7 @@ def get_roi_dict(mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .a
     """
     #Get number of unique ROIs
     num_of_roi = np.unique(mask).tolist()
-    print(num_of_roi)
+    #print(num_of_roi)
     #Create dict of arrays and their ROI
     roi_dict = {}
     for i in num_of_roi[1:]: #Avoid creating one for the "non-brain" (0 values)
@@ -48,7 +51,7 @@ def get_image_rois(roi_dict:dict, img: np.array) -> dict:
         roi_arrays[f"ROI_{int(key)}"] = np.array(roi_time).astype(np.float32)
     return roi_arrays
 
-def clean_scans(folder: str, mask, mac: bool = True) -> None:
+def clean_scans(folder: str, target_folder:str, mask, mac: bool = True) -> None:
     """This function takes a folder (str) that is places
        in data.nosync/clean, and cleans it into 
        numpy files.
@@ -63,10 +66,9 @@ def clean_scans(folder: str, mask, mac: bool = True) -> None:
         sync = ""
 
     preprocessed_path = f'../data{sync}/preprocessed/{folder}'
-    clean_path = f'../data{sync}/clean/{folder}'
+    clean_path = f'../data{sync}/clean/{target_folder}'
 
     mask = nimg.load_img(f'../data{sync}/{mask}')
-
 
     file_list = os.listdir(preprocessed_path)
     for file_name in tqdm(file_list):
@@ -84,13 +86,13 @@ def clean_scans(folder: str, mask, mac: bool = True) -> None:
                                         force_resample = True, #NC: not sure, new to a recent version of the library
                                         copy_header=True) 
         
-        img_t = threshold_img( # mask the image and threshold
+        img = threshold_img( # mask the image and threshold
             img,
-            threshold=0.001,#TODO change if not this dataset with gaussian blurring
+            threshold= np.float32(0.0), #TODO change if not this dataset with gaussian blurring
             two_sided=True,
-            copy=True,
             copy_header=True,
-            mask_img= nimg.binarize_img(fitted_mask)
+            copy=True,
+            mask_img= nimg.binarize_img(fitted_mask, copy_header=True)
             )
         
         # # #check visually
@@ -107,14 +109,16 @@ def clean_scans(folder: str, mask, mac: bool = True) -> None:
 
         #Get ROI
         roi_dict = get_roi_dict(mask = fitted_mask) 
-        print(roi_dict.keys())
+        #print(roi_dict.keys())
         #Get roi arrays over time
         roi_arrays = get_image_rois(roi_dict = roi_dict, img = img)
-        print(roi_arrays.keys())
-        print(roi_arrays["ROI_1"].shape)
+        #print(roi_arrays.keys())
+        #print(roi_arrays["ROI_1"].shape)
         #Save
-        #np.savez_compressed(f"{clean_path}/{file_name[:-4]}", **roi_arrays, allow_pickle=True) # TODO need to re-run, but lets sort the filepaths and workflow first :)
+        np.savez_compressed(f"{clean_path}/{file_name[:-4]}", **roi_arrays, allow_pickle=True) # TODO need to re-run, but lets sort the filepaths and workflow first :)
         # break
+
 if __name__ =="__main__":
     #this is abide data
-    clean_scans(folder = 'NYU', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=False)
+    clean_scans(folder = 'ADHD200', target_folder='ADHD200_7', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
+    clean_scans(folder = 'ADHD200', target_folder='ADHD200_17', mask = 'Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
