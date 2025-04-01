@@ -1,14 +1,6 @@
-import nibabel as nib
 import numpy as np
 import pandas as pd
-from nilearn import image as nimg
-from nilearn import plotting as nplot
-from nilearn import masking as nimask
-from matplotlib import pyplot as plt
-import seaborn as sns
 from tqdm import tqdm
-import pickle
-import math 
 import os
 
 def get_mean_and_var_stats(data_folder:str, mac:bool = True) -> pd.DataFrame:
@@ -25,7 +17,8 @@ def get_mean_and_var_stats(data_folder:str, mac:bool = True) -> pd.DataFrame:
     path_addon = '.nosync' if mac else ''
     clean_path = f'data{path_addon}/clean/{data_folder}'
     file_list = os.listdir(clean_path)
-    file_list.remove('.DS_Store')
+    if '.DS_Store' in file_list:
+        file_list.remove('.DS_Store')
 
     means_pr_roi = []
     var_pr_roi = []
@@ -53,9 +46,9 @@ def get_mean_and_var_stats(data_folder:str, mac:bool = True) -> pd.DataFrame:
     
     #save stats
     means_pr_roi = pd.DataFrame(means_pr_roi)
-    means_pr_roi.to_csv(f'data/stats/{data_folder}_mean_subject.csv', sep= ";")
+    means_pr_roi.to_csv(f'data{path_addon}/stats/{data_folder}_mean_subject.csv', sep= ";")
 
     var_pr_roi = pd.DataFrame(var_pr_roi)
-    var_pr_roi.to_csv(f'data/stats/{data_folder}_variance_subject.csv', sep= ";")
+    var_pr_roi.to_csv(f'data{path_addon}/stats/{data_folder}_variance_subject.csv', sep= ";")
 
     return means_pr_roi, var_pr_roi
