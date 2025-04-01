@@ -1,1 +1,1 @@
-# Thesis_-Neurodiversity
+# Thesis_Neurodiversity
