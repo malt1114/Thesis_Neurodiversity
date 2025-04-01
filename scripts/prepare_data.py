@@ -2,9 +2,12 @@ from nilearn import image as nimg
 from tqdm import tqdm
 import numpy as np
 import os
+from typing import Dict
 
+from nilearn.image import threshold_img
+from nilearn import plotting as nplot
 
-def get_roi_dict(mask: np.array) -> dict[int:np.array]:
+def get_roi_dict(mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .array is function to make type
     """This function returns a dict of the ROI masks
 
     Returns:
@@ -12,6 +15,7 @@ def get_roi_dict(mask: np.array) -> dict[int:np.array]:
     """
     #Get number of unique ROIs
     num_of_roi = np.unique(mask).tolist()
+    print(num_of_roi)
     #Create dict of arrays and their ROI
     roi_dict = {}
     for i in num_of_roi[1:]: #Avoid creating one for the "non-brain" (0 values)
@@ -44,7 +48,7 @@ def get_image_rois(roi_dict:dict, img: np.array) -> dict:
         roi_arrays[f"ROI_{int(key)}"] = np.array(roi_time).astype(np.float32)
     return roi_arrays
 
-def clean_scans(folder: str, mask) -> None:
+def clean_scans(folder: str, mask, mac: bool = True) -> None:
     """This function takes a folder (str) that is places
        in data.nosync/clean, and cleans it into 
        numpy files.
@@ -52,35 +56,65 @@ def clean_scans(folder: str, mask) -> None:
     Args:
         folder (str): the folder with files to clean
     """
-    preprocessed_path = f'../data.nosync/preprocessed/{folder}'
-    clean_path = f'../data.nosync/clean/{folder}'
+    #windows vs mac :)
+    if mac == True:
+        sync = ".nosync"
+    elif mac == False:
+        sync = ""
 
-    mask = nimg.load_img(f"../data.nosync/{mask}")
+    preprocessed_path = f'../data{sync}/preprocessed/{folder}'
+    clean_path = f'../data{sync}/clean/{folder}'
+
+    mask = nimg.load_img(f'../data{sync}/{mask}')
+
 
     file_list = os.listdir(preprocessed_path)
     for file_name in tqdm(file_list):
+        if file_name == file_list[0]:
+            continue
         #Load image
         img = nimg.load_img(f"{preprocessed_path}/{file_name}")
-        
+
         #Fit mask to image
         fitted_mask = nimg.resample_img(mask, 
-                                        target_affine=img.affine, 
+                                        target_affine=img.affine, #NC: not sure here as i think we originally used one example image as basis for affine transform, 
+                                        #maybe there are differences doing things this way? this is potentially slower but probably leads to the same result
                                         interpolation='nearest',
                                         target_shape=img.shape[:3], 
-                                        force_resample = True,
-                                        copy_header=True)
+                                        force_resample = True, #NC: not sure, new to a recent version of the library
+                                        copy_header=True) 
+        
+        img_t = threshold_img( # mask the image and threshold
+            img,
+            threshold=0.001,#TODO change if not this dataset with gaussian blurring
+            two_sided=True,
+            copy=True,
+            copy_header=True,
+            mask_img= nimg.binarize_img(fitted_mask)
+            )
+        
+        # # #check visually
+        # nplot.plot_roi(mask, img.slicer[:,:,:,30],cut_coords=[-4,14,7])
+
+        # nplot.plot_roi(fitted_mask, img_t.slicer[:,:,:,30],cut_coords=[-4,14,7])
+        # nplot.plot_img(img_t.slicer[:,:,:,30],threshold=0,cut_coords=[-4,14,7])
+
+        # nplot.show()
+
         #Make into numpy arrays
         fitted_mask = fitted_mask.get_fdata()
         img = img.get_fdata()
 
         #Get ROI
-        roi_dict = get_roi_dict(mask = fitted_mask)
-
+        roi_dict = get_roi_dict(mask = fitted_mask) 
+        print(roi_dict.keys())
         #Get roi arrays over time
         roi_arrays = get_image_rois(roi_dict = roi_dict, img = img)
-
+        print(roi_arrays.keys())
+        print(roi_arrays["ROI_1"].shape)
         #Save
-        np.savez_compressed(f"{clean_path}/{file_name[:-4]}", **roi_arrays, allow_pickle=True)
-
-
-clean_scans(folder = 'NYU', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii')
+        #np.savez_compressed(f"{clean_path}/{file_name[:-4]}", **roi_arrays, allow_pickle=True) # TODO need to re-run, but lets sort the filepaths and workflow first :)
+        # break
+if __name__ =="__main__":
+    #this is abide data
+    clean_scans(folder = 'NYU', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=False)
