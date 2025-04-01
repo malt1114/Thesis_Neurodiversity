@@ -2,3 +2,5 @@
 .DS_Store
 data/clean/NYU/
 data/Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii
+data/Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii
+*.nii
