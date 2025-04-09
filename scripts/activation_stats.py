@@ -67,3 +67,4 @@ def get_activations(data_folder:str, mac:bool = True):
     return None
 
 get_activations(data_folder = 'ADHD200_7')
+get_activations(data_folder = 'ADHD200_17')
