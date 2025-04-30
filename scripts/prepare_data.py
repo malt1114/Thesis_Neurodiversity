@@ -10,19 +10,24 @@ from nilearn import plotting as nplot
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
-def get_roi_dict(mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .array is function to make type
+def get_roi_dict(mask: np.ndarray, filter_mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .array is function to make type
     """This function returns a dict of the ROI masks
 
     Returns:
         dict: key is the roi number and value is a np array of bools
     """
+    if filter_mask is not None:
+        #Filter mask should be 1 (brain)
+        filter_mask = filter_mask == 1
+    
     #Get number of unique ROIs
     num_of_roi = np.unique(mask).tolist()
-    #print(num_of_roi)
+
     #Create dict of arrays and their ROI
     roi_dict = {}
     for i in num_of_roi[1:]: #Avoid creating one for the "non-brain" (0 values)
         roi = mask == i
+        roi = (roi == True) & (filter_mask == True)
         roi_dict[i] = roi[:,:,:,0]
     return roi_dict
 
@@ -40,6 +45,7 @@ def get_image_rois(roi_dict:dict, img: np.array) -> dict:
         dict: key is the ROI, value is a np.array of the ROI over time
     """
     roi_arrays = {}
+    all_voxels_arr = []
     
     #Make one numpy array for each of the ROIs
     for key, value in roi_dict.items():
@@ -48,10 +54,52 @@ def get_image_rois(roi_dict:dict, img: np.array) -> dict:
         #For each timestep
         for t in range(img.shape[-1]):
             roi_time.append(img[:,:,:,t][temp_mask])
+        all_voxels_arr += roi_time
         roi_arrays[f"ROI_{int(key)}"] = np.array(roi_time).astype(np.float32)
+    
+    #Calculate statistics and perform standardization
+    all_voxels = np.concatenate(all_voxels_arr)
+    std = all_voxels.std()
+    mean = all_voxels.mean()
+
+    for key, value in roi_arrays.items():
+        roi_arrays[key] = (value-mean)/std
+    print(f'Scan has {len(roi_arrays)}, and is standardized')
     return roi_arrays
 
-def clean_scans(folder: str, target_folder:str, mask, mac: bool = True) -> None:
+def read_img_fit_mask(img_path:str, mask, filter_mask:str) -> np.array:
+    """This function: 
+        1. loads the image (scan)
+        2. fits the image to the mask
+        3. filters the image based on a threshold
+        4. makes the mask and image into np arrays
+        5. returns the numpy arrays
+
+    Args:
+        img_path (str): The path to the image/scan file
+        mask (_type_): The mask used
+
+    Returns:
+        fitted_mask: np.array
+        img: np.array
+    """
+    #Load image
+    img = nimg.load_img(img_path)
+    #Fit parcellation to the filter mask
+    fitted_mask = nimg.resample_img(mask, 
+                                    target_affine=filter_mask.affine, 
+                                    interpolation='nearest',
+                                    target_shape=filter_mask.shape[:3], 
+                                    force_resample = True,
+                                    copy_header=True) 
+    
+    #Make into numpy arrays
+    fitted_mask = fitted_mask.get_fdata()
+    img = img.get_fdata()
+
+    return fitted_mask, img
+
+def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True) -> None:
     """This function takes a folder (str) that is places
        in data.nosync/clean, and cleans it into 
        numpy files.
@@ -65,60 +113,61 @@ def clean_scans(folder: str, target_folder:str, mask, mac: bool = True) -> None:
     elif mac == False:
         sync = ""
 
-    preprocessed_path = f'../data{sync}/preprocessed/{folder}'
+    if hpc:
+        #If on the HPC, we need to iterrate over all the folders
+        #to find the files that we need
+        #Get all paths to the participants
+        participant_folder_path = f'../data{sync}/preprocessed/{folder}/output/pipeline_cpac-nc-custom-pipeline'
+
+        file_list = []
+
+        #For each participant
+        for p in os.listdir(participant_folder_path):
+            sessions = os.listdir(f"{participant_folder_path}/{p}")
+            #For each session
+            for s in sessions:
+                #e.g participant_folder_path/sub-29177/ses-1/func/sub-29177_ses-1_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz
+                file_list.append((f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz",
+                                 f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_res-3mm_desc-bold_mask.nii.gz"))   
+    else:
+        #Path with the fmri scans
+        preprocessed_path = f'../data{sync}/preprocessed/{folder}'
+        file_list = os.listdir(preprocessed_path)
+        file_list = [f"{preprocessed_path}/{i}" for i in file_list]
+    
+    #Path where to save the cleaned data
     clean_path = f'../data{sync}/clean/{target_folder}'
 
     mask = nimg.load_img(f'../data{sync}/{mask}')
 
-    file_list = os.listdir(preprocessed_path)
-    for file_name in tqdm(file_list):
-        if file_name == file_list[0]:
-            continue
-        #Load image
-        img = nimg.load_img(f"{preprocessed_path}/{file_name}")
+    for file in tqdm(file_list):
+        if type(file) != str:
+            #read filter mask
+            filter_mask = nimg.load_img(file[1])
+            #read image and fit mask 
+            fitted_mask, img = read_img_fit_mask(img_path = file[0],
+                                                mask = mask,
+                                                filter_mask= filter_mask)
+            roi_dict = get_roi_dict(mask = fitted_mask, filter_mask = filter_mask)
 
-        #Fit mask to image
-        fitted_mask = nimg.resample_img(mask, 
-                                        target_affine=img.affine, #NC: not sure here as i think we originally used one example image as basis for affine transform, 
-                                        #maybe there are differences doing things this way? this is potentially slower but probably leads to the same result
-                                        interpolation='nearest',
-                                        target_shape=img.shape[:3], 
-                                        force_resample = True, #NC: not sure, new to a recent version of the library
-                                        copy_header=True) 
-        
-        img = threshold_img( # mask the image and threshold
-            img,
-            threshold= np.float32(0.0), #TODO change if not this dataset with gaussian blurring
-            two_sided=True,
-            copy_header=True,
-            copy=True,
-            mask_img= nimg.binarize_img(fitted_mask, copy_header=True)
-            )
-        
-        # # #check visually
-        # nplot.plot_roi(mask, img.slicer[:,:,:,30],cut_coords=[-4,14,7])
+        else:
+            fitted_mask, img = read_img_fit_mask(img_path = file,
+                                                mask = mask,
+                                                filter_mask= None)
+            #Get ROI
+            roi_dict = get_roi_dict(mask = fitted_mask, filter_mask = None)
 
-        # nplot.plot_roi(fitted_mask, img_t.slicer[:,:,:,30],cut_coords=[-4,14,7])
-        # nplot.plot_img(img_t.slicer[:,:,:,30],threshold=0,cut_coords=[-4,14,7])
-
-        # nplot.show()
-
-        #Make into numpy arrays
-        fitted_mask = fitted_mask.get_fdata()
-        img = img.get_fdata()
-
-        #Get ROI
-        roi_dict = get_roi_dict(mask = fitted_mask) 
-        #print(roi_dict.keys())
         #Get roi arrays over time
         roi_arrays = get_image_rois(roi_dict = roi_dict, img = img)
-        #print(roi_arrays.keys())
-        #print(roi_arrays["ROI_1"].shape)
         #Save
-        np.savez_compressed(f"{clean_path}/{file_name[:-4]}", **roi_arrays, allow_pickle=True) # TODO need to re-run, but lets sort the filepaths and workflow first :)
-        # break
+        np.savez_compressed(f"{clean_path}/{file.split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
+
 
 if __name__ =="__main__":
     #this is abide data
-    clean_scans(folder = 'ADHD200', target_folder='ADHD200_7', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
-    clean_scans(folder = 'ADHD200', target_folder='ADHD200_17', mask = 'Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
+    clean_scans(folder = 'ADHD200', hpc = False, target_folder='ADHD200_7', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
+    clean_scans(folder = 'ADHD200', 
+                hpc = False, 
+                target_folder='ADHD200_17', 
+                mask = 'Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', 
+                mac=True)

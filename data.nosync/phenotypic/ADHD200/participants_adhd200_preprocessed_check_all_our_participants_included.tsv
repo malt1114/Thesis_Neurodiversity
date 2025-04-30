@@ -1,0 +1,305 @@
+participant_id	gender	age	handedness	dx	adhd_index	inattentive	hyper_impulsive	iq_measure	verbal_iq	performance_iq	full4_iq	qc_rest_1	qc_rest_2	qc_anatomical_1	qc_anatomical_2
+21002	Male	11.72	1	ADHD-Combined	70	70	56	Wechsler Abbreviated Scale of Intelligence (WASI)	105	89	97	Pass	Pass	Pass	N/A
+21003	Female	9.11	0.18	ADHD-Inattentive	87	77	90	Wechsler Abbreviated Scale of Intelligence (WASI)	111	119	117	Pass	N/A	Pass	N/A
+21005	Male	11.03	0.44	Typically Developing Children	42	41	43	Wechsler Abbreviated Scale of Intelligence (WASI)	105	107	107	Pass	Pass	Pass	N/A
+21006	Male	9.81	0.5	ADHD-Combined	73	71	76	Wechsler Abbreviated Scale of Intelligence (WASI)	106	108	108	Pass	N/A	Pass	N/A
+21007	Male	10.52	0.91	Typically Developing Children	45	46	45	Wechsler Abbreviated Scale of Intelligence (WASI)	102	119	111	Pass	Pass	Pass	N/A
+21008	Male	11.28	0.15	ADHD-Combined	68	72	56	Wechsler Abbreviated Scale of Intelligence (WASI)	N/A	N/A	N/A	Pass	Pass	Pass	N/A
+21009	Female	11.65	0.82	ADHD-Combined	77	77	86	Wechsler Abbreviated Scale of Intelligence (WASI)	104	109	107	Pass	Pass	Pass	N/A
+21010	Male	15.69	0.75	ADHD-Inattentive	68	64	64	Wechsler Abbreviated Scale of Intelligence (WASI)	110	89	100	Pass	Pass	Pass	N/A
+21013	Male	7.51	-0.61	ADHD-Combined	64	60	63	Wechsler Abbreviated Scale of Intelligence (WASI)	103	103	103	Pass	Questionable	Pass	N/A
+21014	Male	15.93	0.33	ADHD-Combined	70	69	70	Wechsler Abbreviated Scale of Intelligence (WASI)	109	70	87	Pass	N/A	Pass	N/A
+21015	Male	9.3	1	ADHD-Combined	78	79	78	Wechsler Abbreviated Scale of Intelligence (WASI)	116	122	119	Pass	Pass	Pass	N/A
+21016	Male	16.55	0.81	Typically Developing Children	47	45	48	Wechsler Abbreviated Scale of Intelligence (WASI)	114	109	113	Pass	Pass	Pass	N/A
+21017	Female	11.11	0.22	ADHD-Inattentive	69	77	47	Wechsler Abbreviated Scale of Intelligence (WASI)	98	101	100	Pass	Pass	Pass	N/A
+21018	Male	11.73	0.44	Typically Developing Children	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	113	116	116	Pass	Pass	Pass	N/A
+21019	Male	15.53	0.73	Typically Developing Children	40	45	43	Wechsler Abbreviated Scale of Intelligence (WASI)	112	99	107	Pass	Pass	Pass	N/A
+21020	Female	15.42	0.91	Typically Developing Children	43	53	43	Wechsler Abbreviated Scale of Intelligence (WASI)	108	67	85	Pass	Questionable	Pass	N/A
+21021	Male	15.03	0.72	ADHD-Inattentive	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	116	109	115	Pass	Pass	Pass	N/A
+21022	Female	9.62	0.55	ADHD-Combined	90	90	75	Wechsler Abbreviated Scale of Intelligence (WASI)	105	92	99	Pass	Pass	Pass	N/A
+21023	Male	8.11	0.81	ADHD-Combined	69	69	66	Wechsler Abbreviated Scale of Intelligence (WASI)	115	114	116	Pass	Pass	Pass	N/A
+21024	Female	8.5	0.53	Typically Developing Children	48	51	48	Wechsler Abbreviated Scale of Intelligence (WASI)	131	133	136	Pass	N/A	Pass	N/A
+21025	Male	8.92	0.68	ADHD-Inattentive	65	66	55	Wechsler Abbreviated Scale of Intelligence (WASI)	87	79	81	Pass	Pass	Pass	N/A
+21026	Male	7.49	0.61	ADHD-Combined	71	73	66	Wechsler Abbreviated Scale of Intelligence (WASI)	105	127	116	Pass	Pass	Pass	N/A
+21027	Female	10.43	0.28	ADHD-Inattentive	79	83	65	Wechsler Abbreviated Scale of Intelligence (WASI)	119	118	120	Pass	Questionable	Pass	N/A
+21028	Female	8.52	0.68	Typically Developing Children	59	59	52	Wechsler Abbreviated Scale of Intelligence (WASI)	132	120	129	Pass	Pass	Pass	N/A
+21029	Male	10.73	-0.31	Typically Developing Children	49	56	47	Wechsler Abbreviated Scale of Intelligence (WASI)	120	117	121	Pass	Questionable	Pass	N/A
+21030	Male	10.74	0.2	ADHD-Combined	77	82	56	Wechsler Abbreviated Scale of Intelligence (WASI)	110	100	N/A	Pass	N/A	Pass	N/A
+21031	Female	7.35	1	ADHD-Combined	86	90	71	Wechsler Abbreviated Scale of Intelligence (WASI)	115	97	107	Pass	N/A	Pass	N/A
+21032	Female	8.84	0.81	ADHD-Combined	63	65	75	Wechsler Abbreviated Scale of Intelligence (WASI)	138	101	120	Pass	N/A	Pass	N/A
+21033	Female	8.08	0.5	ADHD-Combined	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	111	105	109	Pass	N/A	Pass	N/A
+21034	Male	13.18	0.72	Typically Developing Children	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	95	106	101	Pass	N/A	Pass	N/A
+21035	Male	13.65	1	ADHD-Combined	81	77	75	Wechsler Abbreviated Scale of Intelligence (WASI)	118	103	112	Pass	Pass	Pass	N/A
+21036	Male	12.55	0.69	ADHD-Combined	82	78	90	Wechsler Abbreviated Scale of Intelligence (WASI)	80	78	77	Pass	N/A	Pass	N/A
+21037	Male	13.63	0.75	ADHD-Inattentive	70	77	70	Wechsler Abbreviated Scale of Intelligence (WASI)	119	114	119	Pass	Pass	Pass	N/A
+21038	Male	7.26	0.61	Typically Developing Children	51	56	50	Wechsler Abbreviated Scale of Intelligence (WASI)	127	108	119	Pass	Pass	Pass	N/A
+21039	Male	7.56	0.36	ADHD-Combined	60	76	61	Wechsler Abbreviated Scale of Intelligence (WASI)	101	79	88	Pass	Pass	Pass	N/A
+21040	Male	7.62	0.91	ADHD-Combined	77	70	90	Wechsler Abbreviated Scale of Intelligence (WASI)	99	102	100	Pass	Pass	Pass	N/A
+21041	Female	12.1	0.48	Typically Developing Children	42	43	47	Wechsler Abbreviated Scale of Intelligence (WASI)	119	119	123	Pass	Pass	Pass	N/A
+21042	Male	9.42	1	ADHD-Combined	75	79	70	Wechsler Abbreviated Scale of Intelligence (WASI)	94	72	81	Pass	N/A	Pass	N/A
+21043	Female	9.17	0.72	ADHD-Combined	90	90	90	Wechsler Abbreviated Scale of Intelligence (WASI)	88	80	83	Pass	N/A	Pass	N/A
+21044	Male	7.74	0.91	ADHD-Combined	77	81	83	Wechsler Abbreviated Scale of Intelligence (WASI)	89	93	89	Pass	Questionable	Pass	N/A
+21046	Male	9.61	0.22	ADHD-Combined	75	77	72	Wechsler Abbreviated Scale of Intelligence (WASI)	104	117	111	Pass	Pass	Pass	N/A
+21002	Male	11.72	1	ADHD-Combined	70	70	56	Wechsler Abbreviated Scale of Intelligence (WASI)	105	89	97	Pass	Pass	Pass	N/A
+21003	Female	9.11	0.18	ADHD-Inattentive	87	77	90	Wechsler Abbreviated Scale of Intelligence (WASI)	111	119	117	Pass	N/A	Pass	N/A
+21005	Male	11.03	0.44	Typically Developing Children	42	41	43	Wechsler Abbreviated Scale of Intelligence (WASI)	105	107	107	Pass	Pass	Pass	N/A
+21006	Male	9.81	0.5	ADHD-Combined	73	71	76	Wechsler Abbreviated Scale of Intelligence (WASI)	106	108	108	Pass	N/A	Pass	N/A
+21007	Male	10.52	0.91	Typically Developing Children	45	46	45	Wechsler Abbreviated Scale of Intelligence (WASI)	102	119	111	Pass	Pass	Pass	N/A
+21008	Male	11.28	0.15	ADHD-Combined	68	72	56	Wechsler Abbreviated Scale of Intelligence (WASI)	N/A	N/A	N/A	Pass	Pass	Pass	N/A
+21009	Female	11.65	0.82	ADHD-Combined	77	77	86	Wechsler Abbreviated Scale of Intelligence (WASI)	104	109	107	Pass	Pass	Pass	N/A
+21010	Male	15.69	0.75	ADHD-Inattentive	68	64	64	Wechsler Abbreviated Scale of Intelligence (WASI)	110	89	100	Pass	Pass	Pass	N/A
+21013	Male	7.51	-0.61	ADHD-Combined	64	60	63	Wechsler Abbreviated Scale of Intelligence (WASI)	103	103	103	Pass	Questionable	Pass	N/A
+21014	Male	15.93	0.33	ADHD-Combined	70	69	70	Wechsler Abbreviated Scale of Intelligence (WASI)	109	70	87	Pass	N/A	Pass	N/A
+21015	Male	9.3	1	ADHD-Combined	78	79	78	Wechsler Abbreviated Scale of Intelligence (WASI)	116	122	119	Pass	Pass	Pass	N/A
+21016	Male	16.55	0.81	Typically Developing Children	47	45	48	Wechsler Abbreviated Scale of Intelligence (WASI)	114	109	113	Pass	Pass	Pass	N/A
+21017	Female	11.11	0.22	ADHD-Inattentive	69	77	47	Wechsler Abbreviated Scale of Intelligence (WASI)	98	101	100	Pass	Pass	Pass	N/A
+21018	Male	11.73	0.44	Typically Developing Children	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	113	116	116	Pass	Pass	Pass	N/A
+21019	Male	15.53	0.73	Typically Developing Children	40	45	43	Wechsler Abbreviated Scale of Intelligence (WASI)	112	99	107	Pass	Pass	Pass	N/A
+21020	Female	15.42	0.91	Typically Developing Children	43	53	43	Wechsler Abbreviated Scale of Intelligence (WASI)	108	67	85	Pass	Questionable	Pass	N/A
+21021	Male	15.03	0.72	ADHD-Inattentive	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	116	109	115	Pass	Pass	Pass	N/A
+21022	Female	9.62	0.55	ADHD-Combined	90	90	75	Wechsler Abbreviated Scale of Intelligence (WASI)	105	92	99	Pass	Pass	Pass	N/A
+21023	Male	8.11	0.81	ADHD-Combined	69	69	66	Wechsler Abbreviated Scale of Intelligence (WASI)	115	114	116	Pass	Pass	Pass	N/A
+21024	Female	8.5	0.53	Typically Developing Children	48	51	48	Wechsler Abbreviated Scale of Intelligence (WASI)	131	133	136	Pass	N/A	Pass	N/A
+21025	Male	8.92	0.68	ADHD-Inattentive	65	66	55	Wechsler Abbreviated Scale of Intelligence (WASI)	87	79	81	Pass	Pass	Pass	N/A
+21026	Male	7.49	0.61	ADHD-Combined	71	73	66	Wechsler Abbreviated Scale of Intelligence (WASI)	105	127	116	Pass	Pass	Pass	N/A
+21027	Female	10.43	0.28	ADHD-Inattentive	79	83	65	Wechsler Abbreviated Scale of Intelligence (WASI)	119	118	120	Pass	Questionable	Pass	N/A
+21028	Female	8.52	0.68	Typically Developing Children	59	59	52	Wechsler Abbreviated Scale of Intelligence (WASI)	132	120	129	Pass	Pass	Pass	N/A
+21029	Male	10.73	-0.31	Typically Developing Children	49	56	47	Wechsler Abbreviated Scale of Intelligence (WASI)	120	117	121	Pass	Questionable	Pass	N/A
+21030	Male	10.74	0.2	ADHD-Combined	77	82	56	Wechsler Abbreviated Scale of Intelligence (WASI)	110	100	N/A	Pass	N/A	Pass	N/A
+21031	Female	7.35	1	ADHD-Combined	86	90	71	Wechsler Abbreviated Scale of Intelligence (WASI)	115	97	107	Pass	N/A	Pass	N/A
+21032	Female	8.84	0.81	ADHD-Combined	63	65	75	Wechsler Abbreviated Scale of Intelligence (WASI)	138	101	120	Pass	N/A	Pass	N/A
+21033	Female	8.08	0.5	ADHD-Combined	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	111	105	109	Pass	N/A	Pass	N/A
+21034	Male	13.18	0.72	Typically Developing Children	N/A	N/A	N/A	Wechsler Abbreviated Scale of Intelligence (WASI)	95	106	101	Pass	N/A	Pass	N/A
+21035	Male	13.65	1	ADHD-Combined	81	77	75	Wechsler Abbreviated Scale of Intelligence (WASI)	118	103	112	Pass	Pass	Pass	N/A
+21036	Male	12.55	0.69	ADHD-Combined	82	78	90	Wechsler Abbreviated Scale of Intelligence (WASI)	80	78	77	Pass	N/A	Pass	N/A
+21037	Male	13.63	0.75	ADHD-Inattentive	70	77	70	Wechsler Abbreviated Scale of Intelligence (WASI)	119	114	119	Pass	Pass	Pass	N/A
+21038	Male	7.26	0.61	Typically Developing Children	51	56	50	Wechsler Abbreviated Scale of Intelligence (WASI)	127	108	119	Pass	Pass	Pass	N/A
+21039	Male	7.56	0.36	ADHD-Combined	60	76	61	Wechsler Abbreviated Scale of Intelligence (WASI)	101	79	88	Pass	Pass	Pass	N/A
+21040	Male	7.62	0.91	ADHD-Combined	77	70	90	Wechsler Abbreviated Scale of Intelligence (WASI)	99	102	100	Pass	Pass	Pass	N/A
+21041	Female	12.1	0.48	Typically Developing Children	42	43	47	Wechsler Abbreviated Scale of Intelligence (WASI)	119	119	123	Pass	Pass	Pass	N/A
+21042	Male	9.42	1	ADHD-Combined	75	79	70	Wechsler Abbreviated Scale of Intelligence (WASI)	94	72	81	Pass	N/A	Pass	N/A
+21043	Female	9.17	0.72	ADHD-Combined	90	90	90	Wechsler Abbreviated Scale of Intelligence (WASI)	88	80	83	Pass	N/A	Pass	N/A
+21044	Male	7.74	0.91	ADHD-Combined	77	81	83	Wechsler Abbreviated Scale of Intelligence (WASI)	89	93	89	Pass	Questionable	Pass	N/A
+21046	Male	9.61	0.22	ADHD-Combined	75	77	72	Wechsler Abbreviated Scale of Intelligence (WASI)	104	117	111	Pass	Pass	Pass	N/A
+1000804	Male	7.29	0.83	Typically Developing Children	40	41	41	Wechsler Abbreviated Scale of Intelligence (WASI)	112	103	109	Pass	Questionable	Pass	N/A
+1023964	Male	8.29	0.57	ADHD-Inattentive	60	56	48	Wechsler Abbreviated Scale of Intelligence (WASI)	115	125	123	Pass	Questionable	Pass	Pass
+1057962	Male	8.78	-999	ADHD-Combined	77	81	80	Wechsler Abbreviated Scale of Intelligence (WASI)	131	121	129	Pass	N/A	Pass	Questionable
+1099481	Female	8.04	0.5	ADHD-Combined	86	82	85	Wechsler Abbreviated Scale of Intelligence (WASI)	109	120	116	Pass	Questionable	Pass	Pass
+1127915	Female	12.44	0.21	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	117	126	124	Pass	Pass	Pass	Pass
+1187766	Male	12.79	0.73	ADHD-Combined	64	52	70	Wechsler Abbreviated Scale of Intelligence (WASI)	109	134	129	Pass	Questionable	Pass	Questionable
+1208795	Female	9.57	0.26	ADHD-Inattentive	62	66	43	Wechsler Abbreviated Scale of Intelligence (WASI)	122	109	118	Pass	Questionable	Pass	Questionable
+1283494	Male	8.61	0.67	ADHD-Combined	64	69	65	Wechsler Abbreviated Scale of Intelligence (WASI)	106	106	107	Pass	Questionable	Pass	N/A
+1320247	Male	8.59	0.21	Typically Developing Children	43	41	48	Wechsler Abbreviated Scale of Intelligence (WASI)	131	108	122	Pass	Pass	Pass	Pass
+1359325	Male	10.76	0.56	Typically Developing Children	-999	-999	-999	Wechsler Abbreviated Scale of Intelligence (WASI)	131	135	138	Pass	Pass	Pass	N/A
+1435954	Male	11.92	1	Typically Developing Children	45	44	43	Wechsler Abbreviated Scale of Intelligence (WASI)	102	119	111	Pass	Pass	Pass	N/A
+1471736	Male	13.32	0.91	ADHD-Inattentive	63	63	52	Wechsler Abbreviated Scale of Intelligence (WASI)	106	91	99	Pass	Pass	Pass	Pass
+1497055	Male	8.56	0.62	ADHD-Combined	77	76	87	Wechsler Abbreviated Scale of Intelligence (WASI)	126	119	125	Questionable	Questionable	Questionable	Pass
+1511464	Male	10.12	0.83	ADHD-Inattentive	71	74	62	Wechsler Abbreviated Scale of Intelligence (WASI)	110	104	108	Pass	Pass	Pass	N/A
+1517240	Male	10.06	0.47	ADHD-Combined	76	77	68	Wechsler Abbreviated Scale of Intelligence (WASI)	125	117	125	Pass	N/A	Pass	Questionable
+1567356	Female	8.91	0.31	Typically Developing Children	42	44	43	Wechsler Abbreviated Scale of Intelligence (WASI)	117	128	125	Pass	Pass	Pass	N/A
+1700637	Female	7.68	0.39	Typically Developing Children	43	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	93	100	97	Pass	Questionable	Pass	Pass
+1737393	Male	11.24	-999	Typically Developing Children	42	41	41	Wechsler Abbreviated Scale of Intelligence (WASI)	126	128	130	Pass	Pass	Pass	Pass
+1740607	Female	10.26	0.65	ADHD-Inattentive	84	80	67	Wechsler Abbreviated Scale of Intelligence (WASI)	108	128	119	Pass	Pass	Pass	Pass
+1780174	Male	11.18	0.52	ADHD-Combined	60	61	66	Wechsler Abbreviated Scale of Intelligence (WASI)	96	118	107	Pass	Pass	Pass	Pass
+1854959	Female	12.99	0.5	Typically Developing Children	54	54	59	Wechsler Abbreviated Scale of Intelligence (WASI)	112	96	105	Pass	Questionable	Pass	Pass
+1875084	Female	7.17	0.71	Typically Developing Children	45	44	43	Wechsler Abbreviated Scale of Intelligence (WASI)	85	94	90	Pass	N/A	Pass	N/A
+1884448	Male	8.91	0.19	Typically Developing Children	40	40	41	Wechsler Abbreviated Scale of Intelligence (WASI)	91	109	100	Pass	Pass	Pass	Questionable
+1918630	Male	7.55	0.29	ADHD-Combined	69	64	65	Wechsler Abbreviated Scale of Intelligence (WASI)	115	129	125	Pass	Questionable	Pass	N/A
+1934623	Female	8.45	0.91	Typically Developing Children	42	42	45	Wechsler Abbreviated Scale of Intelligence (WASI)	111	112	114	Pass	Pass	Pass	Pass
+1992284	Male	7.26	0.13	ADHD-Combined	74	68	82	Wechsler Abbreviated Scale of Intelligence (WASI)	120	106	115	Pass	Pass	Pass	Pass
+1995121	Male	11.43	1	Typically Developing Children	41	40	46	Wechsler Abbreviated Scale of Intelligence (WASI)	130	119	127	Pass	N/A	Pass	N/A
+2030383	Male	13.56	0.31	ADHD-Combined	55	51	63	Wechsler Abbreviated Scale of Intelligence (WASI)	141	114	131	Pass	Questionable	Pass	Pass
+2054438	Male	8.11	0.27	ADHD-Combined	63	61	59	Wechsler Abbreviated Scale of Intelligence (WASI)	101	103	102	Pass	Questionable	Pass	Pass
+2107638	Male	10.41	0.91	ADHD-Combined	75	74	72	Wechsler Abbreviated Scale of Intelligence (WASI)	109	106	109	Pass	Questionable	Pass	N/A
+2136051	Male	9.23	0.55	Typically Developing Children	42	44	48	Wechsler Abbreviated Scale of Intelligence (WASI)	127	106	118	Pass	Questionable	Pass	Pass
+2230510	Male	9.17	0.58	ADHD-Combined	72	71	79	Wechsler Abbreviated Scale of Intelligence (WASI)	98	93	95	Questionable	Pass	Pass	N/A
+2260910	Male	12.07	0.11	ADHD-Combined	56	62	52	Wechsler Abbreviated Scale of Intelligence (WASI)	108	88	98	Pass	Pass	Pass	Pass
+2297413	Male	11.06	0.86	ADHD-Inattentive	77	80	70	Wechsler Abbreviated Scale of Intelligence (WASI)	114	94	105	Questionable	Questionable	Questionable	Questionable
+2306976	Male	11.53	0.91	ADHD-Combined	65	64	68	Wechsler Abbreviated Scale of Intelligence (WASI)	115	104	111	Pass	Pass	N/A	N/A
+2497695	Male	11.61	0.6	ADHD-Combined	82	80	79	Wechsler Abbreviated Scale of Intelligence (WASI)	107	123	116	Pass	Pass	Pass	N/A
+2570769	Male	13.49	1	ADHD-Combined	75	70	66	Wechsler Abbreviated Scale of Intelligence (WASI)	88	82	84	Pass	Pass	Pass	Pass
+2682736	Male	10.78	1	ADHD-Combined	69	73	74	Wechsler Abbreviated Scale of Intelligence (WASI)	106	107	107	Pass	Questionable	Pass	Pass
+2730704	Female	10.21	0.91	Typically Developing Children	55	49	57	Wechsler Abbreviated Scale of Intelligence (WASI)	107	83	94	Pass	Pass	Pass	Pass
+2735617	Male	11.42	0.83	Typically Developing Children	45	49	43	Wechsler Abbreviated Scale of Intelligence (WASI)	122	126	127	Pass	Questionable	Pass	N/A
+2741068	Male	8.53	0.82	ADHD-Combined	76	78	72	Wechsler Abbreviated Scale of Intelligence (WASI)	118	107	114	Pass	Questionable	Pass	N/A
+2773205	Female	8.38	0.64	ADHD-Inattentive	83	90	65	Wechsler Abbreviated Scale of Intelligence (WASI)	98	120	109	Pass	N/A	Pass	Pass
+2821683	Male	10.69	0.68	ADHD-Inattentive	73	73	58	Wechsler Abbreviated Scale of Intelligence (WASI)	123	137	134	Pass	Questionable	Pass	Pass
+2854839	Female	9.17	0.45	ADHD-Inattentive	71	76	50	Wechsler Abbreviated Scale of Intelligence (WASI)	116	126	124	Pass	Pass	Pass	Pass
+2907383	Female	12.24	0.54	Typically Developing Children	47	47	43	Wechsler Abbreviated Scale of Intelligence (WASI)	111	105	109	Questionable	Pass	Pass	Pass
+2950672	Male	11.28	1	ADHD-Combined	58	65	56	Wechsler Abbreviated Scale of Intelligence (WASI)	99	95	97	Pass	Questionable	Pass	N/A
+2983819	Female	12.28	0.68	ADHD-Inattentive	90	90	80	Wechsler Abbreviated Scale of Intelligence (WASI)	108	103	107	Pass	Pass	Pass	N/A
+2991307	Male	8.3	0.77	Typically Developing Children	40	40	41	Wechsler Abbreviated Scale of Intelligence (WASI)	115	117	118	Pass	Questionable	Pass	Pass
+2996531	Male	12.62	0.83	ADHD-Inattentive	72	72	72	Wechsler Abbreviated Scale of Intelligence (WASI)	137	119	132	Pass	Pass	Pass	Pass
+3011311	Female	11.56	0.75	Typically Developing Children	47	44	43	Wechsler Abbreviated Scale of Intelligence (WASI)	115	91	103	Pass	Pass	Pass	Pass
+3163200	Male	11.91	1	Typically Developing Children	49	50	46	Wechsler Abbreviated Scale of Intelligence (WASI)	120	117	121	Pass	Questionable	Pass	Pass
+3174224	Male	8.49	0.95	ADHD-Combined	79	83	76	Wechsler Abbreviated Scale of Intelligence (WASI)	109	88	99	Pass	N/A	Pass	Pass
+3235580	Female	8.61	0.44	ADHD-Combined	66	80	69	Wechsler Abbreviated Scale of Intelligence (WASI)	123	107	117	Pass	Questionable	Pass	Pass
+3243657	Female	8.56	0.46	Typically Developing Children	41	45	41	Wechsler Abbreviated Scale of Intelligence (WASI)	100	99	99	Pass	Pass	Pass	N/A
+3349205	Female	10.21	0.2	ADHD-Inattentive	75	68	63	Wechsler Abbreviated Scale of Intelligence (WASI)	104	97	100	Pass	Questionable	Pass	Pass
+3349423	Male	12.59	0.82	Typically Developing Children	42	46	43	Wechsler Abbreviated Scale of Intelligence (WASI)	121	120	124	Pass	Pass	Pass	Pass
+3433846	Male	10.36	0.82	ADHD-Combined	64	65	60	Wechsler Abbreviated Scale of Intelligence (WASI)	107	97	102	Pass	Pass	Pass	N/A
+3441455	Male	9.26	1	ADHD-Inattentive	63	61	54	Wechsler Abbreviated Scale of Intelligence (WASI)	135	116	128	Questionable	Questionable	Questionable	Questionable
+3457975	Female	7.86	0.82	ADHD-Combined	86	84	73	Wechsler Abbreviated Scale of Intelligence (WASI)	123	126	128	Pass	Pass	Pass	Pass
+3518345	Female	7.67	0.67	Typically Developing Children	45	44	47	Wechsler Abbreviated Scale of Intelligence (WASI)	119	126	124	Pass	Questionable	Pass	N/A
+3542588	Female	8.05	1	ADHD-Combined	74	80	63	Wechsler Abbreviated Scale of Intelligence (WASI)	98	94	107	Questionable	Pass	Pass	Pass
+3601861	Female	9.24	0.39	ADHD-Combined	82	79	90	Wechsler Abbreviated Scale of Intelligence (WASI)	99	82	88	Questionable	N/A	Pass	N/A
+3619797	Male	7.49	0.16	ADHD-Combined	74	73	71	Wechsler Abbreviated Scale of Intelligence (WASI)	106	100	103	Questionable	Pass	Pass	Pass
+3650634	Female	13.25	0.91	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	99	101	100	Pass	Pass	Pass	Pass
+3653737	Male	9.38	0.24	ADHD-Combined	63	61	66	Wechsler Abbreviated Scale of Intelligence (WASI)	106	104	106	Pass	Questionable	Pass	Pass
+3662296	Female	12.45	0.76	Typically Developing Children	42	43	47	Wechsler Abbreviated Scale of Intelligence (WASI)	90	104	98	Pass	Pass	Pass	N/A
+3679455	Male	11.97	1	ADHD-Combined	73	68	81	Wechsler Abbreviated Scale of Intelligence (WASI)	114	89	102	Pass	Questionable	Pass	Pass
+3845761	Male	8.19	0.29	Typically Developing Children	40	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	117	102	110	Pass	Questionable	Pass	N/A
+3999344	Female	9.27	0.33	Typically Developing Children	45	48	65	Wechsler Abbreviated Scale of Intelligence (WASI)	134	98	116	Questionable	N/A	Pass	N/A
+4060823	Male	11.8	0.86	ADHD-Inattentive	65	76	52	Wechsler Abbreviated Scale of Intelligence (WASI)	85	107	95	Pass	Pass	Pass	Pass
+4079254	Male	10.19	0.8	Typically Developing Children	43	45	43	Wechsler Abbreviated Scale of Intelligence (WASI)	119	106	115	Pass	Pass	Pass	Pass
+4084645	Female	7.63	0.16	Typically Developing Children	42	46	50	Wechsler Abbreviated Scale of Intelligence (WASI)	110	108	111	Questionable	Pass	Pass	Pass
+4095229	Male	9.32	0.82	ADHD-Combined	60	64	58	Wechsler Abbreviated Scale of Intelligence (WASI)	99	92	95	Questionable	Questionable	Pass	Pass
+4116166	Female	10.81	0.46	ADHD-Combined	72	60	86	Wechsler Abbreviated Scale of Intelligence (WASI)	122	93	108	Pass	Pass	Pass	Pass
+4154672	Male	9.23	0.77	ADHD-Combined	76	73	74	Wechsler Abbreviated Scale of Intelligence (WASI)	118	117	119	Questionable	Pass	Pass	N/A
+4164316	Male	10.69	0.29	Typically Developing Children	42	40	44	Wechsler Abbreviated Scale of Intelligence (WASI)	92	72	80	Pass	Questionable	Pass	N/A
+4187857	Male	13.28	0.82	ADHD-Combined	62	55	54	Wechsler Abbreviated Scale of Intelligence (WASI)	105	111	109	Pass	Questionable	Pass	N/A
+4562206	Female	7.91	0.4	Typically Developing Children	42	42	47	Wechsler Abbreviated Scale of Intelligence (WASI)	112	104	109	Pass	N/A	Pass	N/A
+4827048	Female	13.22	0.69	Typically Developing Children	44	45	56	Wechsler Abbreviated Scale of Intelligence (WASI)	108	99	104	Pass	Pass	Pass	N/A
+5164727	Female	10.16	0.16	ADHD-Combined	90	90	90	Wechsler Abbreviated Scale of Intelligence (WASI)	117	109	115	Pass	Pass	Pass	N/A
+5971050	Male	7.24	0.58	ADHD-Combined	68	64	71	Wechsler Abbreviated Scale of Intelligence (WASI)	101	88	94	Pass	Questionable	Questionable	Pass
+6206397	Female	11.56	0.76	Typically Developing Children	50	53	46	Wechsler Abbreviated Scale of Intelligence (WASI)	85	79	80	Pass	Pass	Pass	Pass
+6568351	Female	8.1	0.05	Typically Developing Children	52	59	49	Wechsler Abbreviated Scale of Intelligence (WASI)	102	99	101	Pass	Questionable	Pass	Pass
+8009688	Female	11.33	0.69	ADHD-Inattentive	84	84	86	Wechsler Abbreviated Scale of Intelligence (WASI)	101	116	109	Pass	Pass	Pass	Pass
+8415034	Female	11.79	0.52	Typically Developing Children	47	47	46	Wechsler Abbreviated Scale of Intelligence (WASI)	108	95	102	Pass	Pass	Pass	N/A
+8692452	Male	12.25	0.82	Typically Developing Children	45	43	52	Wechsler Abbreviated Scale of Intelligence (WASI)	120	127	123	Pass	Pass	Pass	Pass
+8697774	Male	9.92	0.91	ADHD-Combined	67	67	79	Wechsler Abbreviated Scale of Intelligence (WASI)	97	106	101	Pass	Pass	Pass	Pass
+8834383	Male	8.8	0.57	Typically Developing Children	56	51	47	Wechsler Abbreviated Scale of Intelligence (WASI)	106	103	106	Pass	Pass	Pass	Pass
+8915162	Male	10.7	1	ADHD-Combined	76	69	83	Wechsler Abbreviated Scale of Intelligence (WASI)	136	124	134	Questionable	Pass	Pass	N/A
+9326955	Male	10.92	1	ADHD-Combined	76	76	87	Wechsler Abbreviated Scale of Intelligence (WASI)	95	96	95	Pass	Questionable	Pass	Pass
+9578663	Female	8.26	0.83	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	143	117	134	Pass	Questionable	Pass	Pass
+9750701	Male	10.74	0.91	Typically Developing Children	41	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	103	121	113	Pass	Pass	Pass	Pass
+9907452	Male	9.98	0.74	ADHD-Inattentive	62	64	46	Wechsler Abbreviated Scale of Intelligence (WASI)	130	127	132	Pass	Pass	Pass	N/A
+10001	Female	11.17	0.52	ADHD-Inattentive	90	90	80	Wechsler Abbreviated Scale of Intelligence (WASI)	106	91	99	Pass	Pass	Pass	N/A
+10003	Female	9.29	0.11	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	107	93	100	Questionable	N/A	Pass	N/A
+10004	Female	13.75	0.13	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	Pass
+10005	Male	11.92	0.68	ADHD-Hyperactive/Impulsive	63	59	70	Wechsler Abbreviated Scale of Intelligence (WASI)	98	118	108	Questionable	N/A	Pass	N/A
+10016	Male	8.7	0.42	ADHD-Combined	74	78	76	Wechsler Abbreviated Scale of Intelligence (WASI)	87	78	80	N/A	N/A	Pass	N/A
+10009	Male	12.1	0.64	Typically Developing Children	43	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	112	99	107	Pass	Pass	Pass	Pass
+10010	Male	11.32	0.73	Typically Developing Children	45	44	44	Wechsler Abbreviated Scale of Intelligence (WASI)	141	133	142	Pass	Questionable	Pass	Pass
+10012	Female	12.41	0.42	ADHD-Combined	82	67	74	Wechsler Abbreviated Scale of Intelligence (WASI)	102	97	100	Pass	Questionable	Pass	Pass
+10018	Male	11.54	0.57	ADHD-Combined	70	74	66	Wechsler Abbreviated Scale of Intelligence (WASI)	89	100	94	Questionable	N/A	Pass	N/A
+10020	Female	8.37	0.79	ADHD-Combined	80	76	77	Wechsler Abbreviated Scale of Intelligence (WASI)	105	86	95	Pass	N/A	Pass	N/A
+10021	Female	12.54	0.65	Typically Developing Children	56	56	62	Wechsler Abbreviated Scale of Intelligence (WASI)	112	105	109	Pass	Pass	Pass	Pass
+10022	Male	12.12	0.22	ADHD-Combined	78	73	79	Wechsler Abbreviated Scale of Intelligence (WASI)	108	100	105	Pass	Questionable	Pass	Pass
+10023	Male	13.42	0.31	Typically Developing Children	50	52	54	Wechsler Abbreviated Scale of Intelligence (WASI)	104	105	105	Pass	Pass	Pass	Pass
+10028	Male	9.42	1	ADHD-Inattentive	69	67	70	Wechsler Abbreviated Scale of Intelligence (WASI)	99	87	92	Questionable	Pass	Pass	N/A
+10030	Male	12.41	0.43	ADHD-Inattentive	75	75	72	Wechsler Abbreviated Scale of Intelligence (WASI)	100	105	103	Questionable	Questionable	Pass	N/A
+10038	Female	12.79	0.28	Typically Developing Children	47	45	47	Wechsler Abbreviated Scale of Intelligence (WASI)	142	129	140	Pass	Pass	Pass	N/A
+10034	Female	10.86	0.82	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	99	111	106	Pass	Pass	Pass	Pass
+10031	Female	11.87	0.31	Typically Developing Children	54	53	54	Wechsler Abbreviated Scale of Intelligence (WASI)	97	77	85	Pass	N/A	Pass	N/A
+10032	Male	11.1	1	ADHD-Combined	80	77	78	Wechsler Abbreviated Scale of Intelligence (WASI)	91	91	89	Pass	N/A	Pass	N/A
+10035	Male	8.95	0.78	ADHD-Inattentive	71	79	54	Wechsler Abbreviated Scale of Intelligence (WASI)	109	106	109	Pass	Pass	Pass	Pass
+10037	Male	10.9	0.83	ADHD-Combined	68	67	78	Wechsler Abbreviated Scale of Intelligence (WASI)	100	85	91	Pass	Pass	Pass	N/A
+10039	Male	13.28	0.69	Typically Developing Children	47	46	50	Wechsler Abbreviated Scale of Intelligence (WASI)	93	86	87	Questionable	Pass	Pass	N/A
+10042	Male	10.65	0.91	ADHD-Combined	65	59	56	Wechsler Abbreviated Scale of Intelligence (WASI)	100	115	108	Pass	N/A	Pass	N/A
+10044	N/A	9.81	0.33	ADHD-Combined	-999	-999	-999	Wechsler Abbreviated Scale of Intelligence (WASI)	98	119	108	Questionable	Pass	Pass	N/A
+10050	Male	17.43	1	ADHD-Combined	71	69	75	Wechsler Abbreviated Scale of Intelligence (WASI)	119	97	109	Pass	Pass	Pass	Pass
+10051	Male	15.4	0.95	ADHD-Inattentive	55	57	47	Wechsler Abbreviated Scale of Intelligence (WASI)	109	102	107	Pass	Pass	Pass	Pass
+10052	Male	16.31	1	Typically Developing Children	46	46	43	Wechsler Abbreviated Scale of Intelligence (WASI)	83	83	81	Pass	Pass	Pass	Pass
+10053	Female	15.28	-999	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	99	103	101	Pass	Pass	Pass	Pass
+10056	Male	15.63	0.64	ADHD-Inattentive	-999	-999	-999	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	Pass
+10057	Male	17.7	0.68	Typically Developing Children	40	40	46	Wechsler Abbreviated Scale of Intelligence (WASI)	111	92	102	Pass	Pass	Pass	Pass
+10058	Male	14.2	-999	Typically Developing Children	44	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	121	96	109	Pass	Pass	Pass	Pass
+10059	Female	17.89	1	Typically Developing Children	45	45	55	Wechsler Abbreviated Scale of Intelligence (WASI)	127	124	128	Pass	Pass	Pass	Pass
+10054	Male	17.83	-999	Typically Developing Children	53	45	49	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	N/A
+10055	Male	10.86	0	Typically Developing Children	43	40	44	Wechsler Abbreviated Scale of Intelligence (WASI)	97	88	91	N/A	N/A	Pass	Pass
+10048	Male	14.95	0.54	ADHD-Combined	72	81	61	Wechsler Abbreviated Scale of Intelligence (WASI)	120	111	118	Pass	Pass	Pass	N/A
+10060	Male	8.75	0.67	ADHD-Combined	76	79	67	Wechsler Abbreviated Scale of Intelligence (WASI)	93	104	99	Questionable	N/A	Pass	Pass
+10047	Male	12.72	0.91	ADHD-Combined	65	68	66	Wechsler Abbreviated Scale of Intelligence (WASI)	109	131	122	Questionable	N/A	Pass	Pass
+10061	Male	11.41	1	ADHD-Inattentive	79	79	68	Wechsler Abbreviated Scale of Intelligence (WASI)	99	103	101	Questionable	N/A	Questionable	Questionable
+10062	Male	16.14	1	ADHD-Inattentive	70	72	62	Wechsler Abbreviated Scale of Intelligence (WASI)	132	107	122	Pass	Pass	Pass	Pass
+10063	Female	15.91	0.38	Typically Developing Children	42	45	47	Wechsler Abbreviated Scale of Intelligence (WASI)	109	99	105	Pass	Pass	Pass	Pass
+10064	Male	15.9	0.76	ADHD-Combined	81	81	90	Wechsler Abbreviated Scale of Intelligence (WASI)	95	107	101	Pass	N/A	Pass	Pass
+10065	Female	14.19	0.75	Typically Developing Children	46	45	44	Wechsler Abbreviated Scale of Intelligence (WASI)	91	89	88	Pass	Pass	Pass	Pass
+10066	Female	13.9	-0.2	Typically Developing Children	42	47	47	Wechsler Abbreviated Scale of Intelligence (WASI)	122	106	116	Questionable	Questionable	Questionable	Pass
+10067	Male	13.1	0.83	ADHD-Inattentive	74	67	77	Wechsler Abbreviated Scale of Intelligence (WASI)	109	118	115	Questionable	Questionable	Questionable	N/A
+10068	Male	13.3	0.5	Typically Developing Children	-999	-999	-999	-999	-999	-999	-999	Pass	Pass	Pass	Pass
+10069	Male	16.93	-0.11	Typically Developing Children	42	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	120	120	124	Pass	Pass	Pass	N/A
+10119	Male	7.77	1	ADHD-Inattentive	81	79	63	Wechsler Abbreviated Scale of Intelligence (WASI)	101	88	94	Questionable	N/A	Pass	N/A
+10109	Female	16.08	0.45	ADHD-Combined	58	51	74	Wechsler Abbreviated Scale of Intelligence (WASI)	122	105	115	Questionable	Questionable	Pass	Pass
+10110	Female	16.08	0.57	Typically Developing Children	47	43	43	Wechsler Abbreviated Scale of Intelligence (WASI)	99	97	99	Pass	Pass	Pass	Pass
+10111	Male	7.74	-999	Typically Developing Children	41	40	41	Wechsler Abbreviated Scale of Intelligence (WASI)	108	88	98	Questionable	N/A	Pass	N/A
+10046	Male	9.75	0.95	Typically Developing Children	43	44	44	Wechsler Abbreviated Scale of Intelligence (WASI)	133	109	124	Questionable	Questionable	Questionable	N/A
+10112	Male	14.79	0.6	Typically Developing Children	43	46	43	Wechsler Abbreviated Scale of Intelligence (WASI)	116	106	112	Pass	Pass	Pass	Pass
+10107	Male	17.37	0.82	ADHD-Inattentive	68	66	52	Wechsler Abbreviated Scale of Intelligence (WASI)	104	99	102	Pass	Pass	Pass	Pass
+10019	Male	14.81	0.65	ADHD-Combined	76	78	61	Wechsler Abbreviated Scale of Intelligence (WASI)	116	119	120	Pass	Questionable	Pass	Pass
+10077	Female	8.03	0.17	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	99	77	86	Questionable	Questionable	Pass	Pass
+10078	Male	8.19	-0.04	ADHD-Combined	67	73	54	Wechsler Abbreviated Scale of Intelligence (WASI)	113	125	121	Pass	Questionable	Pass	Pass
+10079	Male	15.27	0.75	Typically Developing Children	50	46	45	Wechsler Abbreviated Scale of Intelligence (WASI)	96	110	104	Pass	Pass	Pass	Pass
+10080	Female	17.86	0.58	Typically Developing Children	47	47	43	Wechsler Abbreviated Scale of Intelligence (WASI)	106	103	106	Pass	Pass	Pass	Pass
+10008	Female	14.48	0.82	Typically Developing Children	42	45	47	Wechsler Abbreviated Scale of Intelligence (WASI)	113	106	111	Pass	Pass	Pass	Pass
+10014	Female	7.55	0.86	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	99	98	99	Questionable	Questionable	Pass	Pass
+10089	Female	14.87	0.81	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	107	106	107	Pass	Pass	Pass	Pass
+10090	Male	16.32	1	ADHD-Combined	77	72	87	Wechsler Abbreviated Scale of Intelligence (WASI)	96	93	94	Pass	Pass	Pass	N/A
+10091	Male	8.93	1	ADHD-Combined	77	73	74	Wechsler Abbreviated Scale of Intelligence (WASI)	77	93	83	Pass	Questionable	Pass	Questionable
+10092	Male	17.3	0.9	Typically Developing Children	47	51	43	Wechsler Abbreviated Scale of Intelligence (WASI)	113	104	109	Pass	Questionable	Pass	Pass
+10045	Male	12.49	0.55	Typically Developing Children	41	41	43	Wechsler Abbreviated Scale of Intelligence (WASI)	109	137	126	Pass	Pass	Pass	Pass
+10093	Female	15.21	0.96	Typically Developing Children	42	43	43	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	Pass
+10094	Female	15.21	0.55	Typically Developing Children	42	43	43	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	Pass
+10095	Male	14.39	0.52	ADHD-Combined	69	69	86	Wechsler Abbreviated Scale of Intelligence (WASI)	81	84	81	Pass	Questionable	Pass	Pass
+10096	Male	14.94	0.57	ADHD-Inattentive	70	73	57	Wechsler Abbreviated Scale of Intelligence (WASI)	119	104	113	Questionable	Questionable	Pass	N/A
+10097	Female	14.38	0.91	Typically Developing Children	41	41	43	Wechsler Abbreviated Scale of Intelligence (WASI)	119	120	123	Pass	Pass	Pass	Pass
+10098	Male	7.6	N/A	ADHD-Combined	59	51	65	Wechsler Abbreviated Scale of Intelligence (WASI)	101	98	100	N/A	N/A	Pass	N/A
+10099	Female	9.96	0.4	Typically Developing Children	57	55	66	Wechsler Abbreviated Scale of Intelligence (WASI)	120	99	110	Pass	Pass	Pass	Pass
+10100	Male	16.88	0.42	Typically Developing Children	43	44	43	Wechsler Abbreviated Scale of Intelligence (WASI)	121	123	125	Pass	Pass	Pass	N/A
+10101	Male	14.2	0.75	ADHD-Combined	79	81	79	Wechsler Abbreviated Scale of Intelligence (WASI)	107	79	92	Pass	Pass	Pass	Pass
+10102	Male	16.55	0.29	Typically Developing Children	42	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	88	96	91	Pass	Pass	Pass	Pass
+10108	Female	17.15	0.91	ADHD-Inattentive	68	69	55	Wechsler Abbreviated Scale of Intelligence (WASI)	116	115	115	Pass	Pass	Pass	N/A
+10002	Female	13.24	0.52	ADHD-Inattentive	66	65	62	Wechsler Abbreviated Scale of Intelligence (WASI)	65	89	75	Pass	Pass	Pass	N/A
+10011	Female	9.16	0.52	ADHD-Inattentive	90	90	80	Wechsler Abbreviated Scale of Intelligence (WASI)	102	107	106	Questionable	Questionable	Pass	N/A
+10113	Female	14.91	0.56	Typically Developing Children	59	60	44	Wechsler Abbreviated Scale of Intelligence (WASI)	111	110	113	Pass	Pass	Pass	Pass
+10114	Male	16.73	0.52	Typically Developing Children	40	40	46	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Questionable	Pass	Pass
+10115	Male	15.32	0.92	ADHD-Inattentive	59	64	49	Wechsler Abbreviated Scale of Intelligence (WASI)	98	89	93	Pass	Pass	Pass	Pass
+10006	Female	11.18	0.55	Typically Developing Children	44	42	43	Wechsler Abbreviated Scale of Intelligence (WASI)	117	87	101	Pass	N/A	Pass	N/A
+10105	Female	7.43	0.21	ADHD-Inattentive	73	67	69	Wechsler Abbreviated Scale of Intelligence (WASI)	95	103	99	N/A	N/A	Pass	Pass
+10024	Male	8.26	0.62	Typically Developing Children	40	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	114	107	112	Pass	Questionable	Pass	N/A
+10015	Male	11.21	0.86	ADHD-Inattentive	58	58	48	Wechsler Abbreviated Scale of Intelligence (WASI)	119	133	129	Questionable	Questionable	Questionable	Pass
+10106	Male	11.82	0.5	ADHD-Inattentive	63	58	54	Wechsler Abbreviated Scale of Intelligence (WASI)	106	91	99	Questionable	Questionable	Pass	Questionable
+10116	Male	16.77	0.65	ADHD-Inattentive	61	59	68	Wechsler Abbreviated Scale of Intelligence (WASI)	115	109	114	Pass	Pass	Pass	N/A
+10117	Male	9.35	0.74	Typically Developing Children	62	55	62	Wechsler Abbreviated Scale of Intelligence (WASI)	95	103	99	Questionable	Pass	Pass	Pass
+10118	Male	13.33	1	ADHD-Combined	65	66	77	Wechsler Abbreviated Scale of Intelligence (WASI)	89	83	84	Pass	Pass	Pass	Pass
+10120	Female	17.09	0.83	Typically Developing Children	42	45	43	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	N/A
+10026	Male	11.73	0.81	ADHD-Combined	68	56	76	Wechsler Abbreviated Scale of Intelligence (WASI)	132	123	131	Pass	Pass	Pass	Pass
+10121	Female	14.18	0.74	Typically Developing Children	42	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	108	124	117	Pass	Pass	Pass	N/A
+10122	Male	16.28	0.83	Typically Developing Children	40	40	46	Wechsler Abbreviated Scale of Intelligence (WASI)	122	120	125	Pass	Pass	Pass	Pass
+10123	Male	16.13	0.69	Typically Developing Children	81	81	49	Wechsler Abbreviated Scale of Intelligence (WASI)	109	106	109	Pass	Pass	Pass	Pass
+10082	Male	11.4	0.73	Typically Developing Children	43	44	44	Wechsler Abbreviated Scale of Intelligence (WASI)	141	133	142	Pass	Questionable	Pass	Pass
+10074	Male	8.06	0.43	ADHD-Combined	65	63	80	Wechsler Abbreviated Scale of Intelligence (WASI)	92	88	88	Questionable	N/A	Questionable	N/A
+10075	Male	11.09	0.6	ADHD-Inattentive	60	56	66	Wechsler Abbreviated Scale of Intelligence (WASI)	77	72	73	Pass	Pass	Pass	Pass
+10076	Female	15.95	0.57	Typically Developing Children	42	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	118	106	113	Pass	Pass	Pass	Pass
+10103	Male	9.59	0.24	ADHD-Combined	63	61	66	Wechsler Abbreviated Scale of Intelligence (WASI)	106	104	106	Questionable	Questionable	Pass	N/A
+10081	Female	15.81	0.6	ADHD-Inattentive	71	73	47	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	N/A
+10083	Female	14.42	0.75	Typically Developing Children	42	45	44	Wechsler Abbreviated Scale of Intelligence (WASI)	132	124	132	Pass	Questionable	Pass	N/A
+10084	Female	17.96	0.48	Typically Developing Children	45	43	47	Wechsler Abbreviated Scale of Intelligence (WASI)	113	102	108	Pass	Pass	Pass	Pass
+10085	Female	11.37	0.33	ADHD-Combined	99	77	90	Wechsler Abbreviated Scale of Intelligence (WASI)	82	79	78	Pass	Questionable	Pass	Pass
+10036	Female	9.45	0.47	Typically Developing Children	50	49	60	Wechsler Abbreviated Scale of Intelligence (WASI)	86	86	84	Pass	N/A	Pass	Pass
+10086	Male	15.83	0.63	ADHD-Combined	73	72	71	Wechsler Abbreviated Scale of Intelligence (WASI)	109	93	102	Pass	Pass	Pass	N/A
+10027	Male	8.28	0.91	ADHD-Combined	56	56	59	Wechsler Abbreviated Scale of Intelligence (WASI)	100	92	96	N/A	N/A	Pass	N/A
+10087	Male	17.61	0.47	ADHD-Inattentive	84	86	56	Wechsler Abbreviated Scale of Intelligence (WASI)	82	108	95	Pass	Pass	Pass	Pass
+10025	Male	8.75	0.74	ADHD-Combined	71	69	76	Wechsler Abbreviated Scale of Intelligence (WASI)	109	88	99	Questionable	Questionable	Pass	N/A
+10029	Female	13.09	0.43	ADHD-Combined	73	60	68	Wechsler Abbreviated Scale of Intelligence (WASI)	126	121	127	Pass	Pass	Pass	Pass
+10017	Male	12.38	0.76	ADHD-Combined	77	79	66	Wechsler Abbreviated Scale of Intelligence (WASI)	98	90	94	Pass	Pass	Pass	N/A
+10049	Male	7.35	0.65	ADHD-Combined	77	74	78	Wechsler Abbreviated Scale of Intelligence (WASI)	115	96	106	Pass	N/A	Pass	N/A
+10070	Male	10.52	0.46	Typically Developing Children	41	40	43	Wechsler Abbreviated Scale of Intelligence (WASI)	111	97	105	Pass	Pass	Pass	N/A
+10071	Male	14.09	0.83	ADHD-Inattentive	74	69	72	Wechsler Abbreviated Scale of Intelligence (WASI)	80	88	83	Pass	Pass	Pass	Pass
+10033	Male	10.97	0.36	ADHD-Inattentive	73	77	54	Wechsler Abbreviated Scale of Intelligence (WASI)	104	97	100	Pass	Questionable	Pass	Pass
+10072	Male	7.25	0.45	ADHD-Combined	58	53	50	Wechsler Abbreviated Scale of Intelligence (WASI)	108	107	109	Pass	N/A	Pass	Pass
+10073	Male	14.46	0.45	ADHD-Combined	68	67	70	Wechsler Abbreviated Scale of Intelligence (WASI)	88	79	82	Pass	Pass	Pass	N/A
+10104	Male	13.35	0.76	ADHD-Inattentive	61	67	48	Wechsler Abbreviated Scale of Intelligence (WASI)	127	114	123	Pass	Pass	Pass	Pass
+10088	Male	14.66	0.91	Typically Developing Children	50	48	43	Wechsler Abbreviated Scale of Intelligence (WASI)	115	132	126	Pass	Pass	Pass	N/A
+10040	Male	9.94	0.65	ADHD-Combined	61	61	60	Wechsler Abbreviated Scale of Intelligence (WASI)	141	117	133	Pass	Pass	Pass	N/A
+10124	Female	14.06	0.62	Typically Developing Children	44	43	44	Wechsler Abbreviated Scale of Intelligence (WASI)	109	119	115	Pass	Pass	Pass	Pass
+10041	Male	9.22	0.43	ADHD-Hyperactive/Impulsive	62	61	83	Wechsler Abbreviated Scale of Intelligence (WASI)	109	99	105	Pass	N/A	Pass	Pass
+10125	Male	7.19	0.33	Typically Developing Children	46	46	45	Wechsler Abbreviated Scale of Intelligence (WASI)	120	131	129	Pass	Pass	Pass	N/A
+10007	Female	11.41	0.76	ADHD-Inattentive	77	77	69	Wechsler Abbreviated Scale of Intelligence (WASI)	95	93	95	Pass	Pass	Pass	N/A
+10126	Male	9.7	0.91	ADHD-Combined	79	77	85	Wechsler Abbreviated Scale of Intelligence (WASI)	83	96	88	Pass	N/A	Pass	N/A
+10127	Male	8.14	0.04	ADHD-Combined	77	79	74	Wechsler Abbreviated Scale of Intelligence (WASI)	132	121	130	N/A	N/A	Pass	N/A
+10128	Male	9.53	0.82	Typically Developing Children	56	58	60	Wechsler Abbreviated Scale of Intelligence (WASI)	112	136	127	Pass	Pass	Pass	Pass
+10129	Female	8.39	0.38	ADHD-Inattentive	67	71	47	Wechsler Abbreviated Scale of Intelligence (WASI)	-999	-999	-999	Pass	Pass	Pass	N/A
+10013	Male	9.55	0.67	ADHD-Combined	62	58	58	Wechsler Abbreviated Scale of Intelligence (WASI)	106	88	97	Pass	Pass	Pass	N/A
+10043	Female	8.16	0.36	Typically Developing Children	42	42	45	Wechsler Abbreviated Scale of Intelligence (WASI)	125	99	112	Pass	Pass	Questionable	Pass
