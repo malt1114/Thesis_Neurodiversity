@@ -1,8 +1,8 @@
-from tqdm import tqdm
-import pandas as pd
-import numpy as np
 import os
-
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+from joblib import Parallel, delayed
 
 def get_activations(data_folder:str, mac:bool = True):
     """This function calculates the mean and variance
@@ -48,6 +48,9 @@ def get_activations(data_folder:str, mac:bool = True):
 
         all_voxels = np.array(all_voxels)
 
+        if len(all_voxels) == 0:
+            all_voxels = np.array([-10**6])
+
         thresholds.append({ 'Subject': sub[:-4], 
                             '10th': np.quantile(all_voxels, 0.10),
                             '25th': np.quantile(all_voxels, 0.25),
@@ -62,9 +65,36 @@ def get_activations(data_folder:str, mac:bool = True):
         data.columns = new_header #set the header row as the df header
         data.to_csv(f"../data{path_addon}/stats/{data_folder}/{sub[:-4]}.csv", sep=";")
     
-    pd.DataFrame(thresholds).to_csv(f"../data{path_addon}/stats/{data_folder}_activation_thresholds.csv", sep=";")
+    pd.DataFrame(thresholds).to_csv(f"../data{path_addon}/stats/{data_folder}/{data_folder}_activation_thresholds.csv", sep=";")
 
     return None
 
-get_activations(data_folder = 'ADHD200_7')
-get_activations(data_folder = 'ADHD200_17')
+def get_num_of_voxels_stats(num_of_roi:str):
+    data_files = pd.read_csv(f'../data.nosync/phenotypic/subjects_with_meta_{num_of_roi}.csv', index_col = 'Unnamed: 0')
+    data_files['file_path'] = data_files['file_path'].apply(lambda x: '../../'+x)
+
+    roi_voxels = []
+    for index, row in data_files.iterrows():
+        sub = np.load(row['file_path'], allow_pickle = True)
+        sub_vox = {'Sub ID': row['Sub ID'], 
+                   'Dataset': row['Dataset']}
+        for key, value in sub.items():
+            sub_vox[key] = value.shape[1]
+        roi_voxels.append(sub_vox)
+
+    roi_voxels = pd.DataFrame(roi_voxels)
+    roi_voxels.to_csv(f'../data.nosync/stats/num_of_voxels_pr_timestep_{num_of_roi}.csv')
+
+if __name__ =="__main__":
+    datasets = ['ABIDEI_7', 'ABIDEI_17', 
+                'ABIDEII_7', 'ABIDEII_17', 
+                'ADHD200_7', 'ADHD200_17']
+
+    with Parallel(n_jobs=6, verbose=-1) as parallel:
+            #Prepare the jobs
+            delayed_funcs = [delayed(lambda x:get_activations(data_folder = x, 
+                                                              mac = False))(dataset) for dataset in datasets]
+            #Runs the jobs in parallel
+            parallel(delayed_funcs)
+    get_num_of_voxels_stats(num_of_roi = '7')
+    get_num_of_voxels_stats(num_of_roi = '17')

@@ -1,14 +1,13 @@
-from nilearn import image as nimg
-from tqdm import tqdm
-import numpy as np
 import os
+import numpy as np
+from tqdm import tqdm
 from typing import Dict
-
-from nilearn.image import threshold_img
-from nilearn import plotting as nplot
+from nilearn import image as nimg
+from joblib import Parallel, delayed
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
+warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
 def get_roi_dict(mask: np.ndarray, filter_mask: np.ndarray) -> Dict[int,np.ndarray]: # ndarray is type .array is function to make type
     """This function returns a dict of the ROI masks
@@ -17,9 +16,10 @@ def get_roi_dict(mask: np.ndarray, filter_mask: np.ndarray) -> Dict[int,np.ndarr
         dict: key is the roi number and value is a np array of bools
     """
     if filter_mask is not None:
+        filter_mask = filter_mask.get_fdata()
+        filter_mask = filter_mask.astype(np.int16)
         #Filter mask should be 1 (brain)
         filter_mask = filter_mask == 1
-    
     #Get number of unique ROIs
     num_of_roi = np.unique(mask).tolist()
 
@@ -27,11 +27,13 @@ def get_roi_dict(mask: np.ndarray, filter_mask: np.ndarray) -> Dict[int,np.ndarr
     roi_dict = {}
     for i in num_of_roi[1:]: #Avoid creating one for the "non-brain" (0 values)
         roi = mask == i
-        roi = (roi == True) & (filter_mask == True)
-        roi_dict[i] = roi[:,:,:,0]
+        roi = np.squeeze(roi)
+        if filter_mask is not None:
+            roi = (roi == True) & (filter_mask == True)
+        roi_dict[i] = roi
     return roi_dict
 
-def get_image_rois(roi_dict:dict, img: np.array) -> dict:
+def get_image_rois(roi_dict:dict, img: np.array, standardize: bool = False) -> dict:
     """This creates a np array of (time, voxels) for each
        of the ROI in the roi dict. It then returns a 
        dictionary with each key, value pair being a 
@@ -57,14 +59,15 @@ def get_image_rois(roi_dict:dict, img: np.array) -> dict:
         all_voxels_arr += roi_time
         roi_arrays[f"ROI_{int(key)}"] = np.array(roi_time).astype(np.float32)
     
-    #Calculate statistics and perform standardization
-    all_voxels = np.concatenate(all_voxels_arr)
-    std = all_voxels.std()
-    mean = all_voxels.mean()
+    if standardize:
+        #Calculate statistics and perform standardization
+        all_voxels = np.concatenate(all_voxels_arr)
+        std = all_voxels.std()
+        mean = all_voxels.mean()
 
-    for key, value in roi_arrays.items():
-        roi_arrays[key] = (value-mean)/std
-    print(f'Scan has {len(roi_arrays)}, and is standardized')
+        for key, value in roi_arrays.items():
+            roi_arrays[key] = (value-mean)/std
+    
     return roi_arrays
 
 def read_img_fit_mask(img_path:str, mask, filter_mask:str) -> np.array:
@@ -121,14 +124,26 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
 
         file_list = []
 
+        missing = []
         #For each participant
         for p in os.listdir(participant_folder_path):
             sessions = os.listdir(f"{participant_folder_path}/{p}")
             #For each session
             for s in sessions:
-                #e.g participant_folder_path/sub-29177/ses-1/func/sub-29177_ses-1_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz
-                file_list.append((f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz",
-                                 f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_res-3mm_desc-bold_mask.nii.gz"))   
+                p_files = os.listdir(f"{participant_folder_path}/{p}/{s}/func/")
+                scan_file = f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz"
+                if f"{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz" in p_files:
+                    #e.g participant_folder_path/sub-29177/ses-1/func/sub-29177_ses-1_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz
+                    file_list.append((scan_file,
+                                    f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_res-3mm_desc-bold_mask.nii.gz"))
+                else:
+                    missing.append(scan_file)
+                    
+        #Print missing scans
+        print('Missing files:', flush = True)
+        for m in missing:
+            print(m, flush = True)
+
     else:
         #Path with the fmri scans
         preprocessed_path = f'../data{sync}/preprocessed/{folder}'
@@ -149,6 +164,9 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
                                                 mask = mask,
                                                 filter_mask= filter_mask)
             roi_dict = get_roi_dict(mask = fitted_mask, filter_mask = filter_mask)
+            roi_arrays = get_image_rois(roi_dict = roi_dict, img = img, standardize = True)
+            #Save
+            np.savez_compressed(f"{clean_path}/{file[0].split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
 
         else:
             fitted_mask, img = read_img_fit_mask(img_path = file,
@@ -156,18 +174,32 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
                                                 filter_mask= None)
             #Get ROI
             roi_dict = get_roi_dict(mask = fitted_mask, filter_mask = None)
-
-        #Get roi arrays over time
-        roi_arrays = get_image_rois(roi_dict = roi_dict, img = img)
-        #Save
-        np.savez_compressed(f"{clean_path}/{file.split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
+            #Get roi arrays over time
+            roi_arrays = get_image_rois(roi_dict = roi_dict, img = img, standardize = False)
+        
+            #Save
+            np.savez_compressed(f"{clean_path}/{file.split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
 
 
 if __name__ =="__main__":
-    #this is abide data
-    clean_scans(folder = 'ADHD200', hpc = False, target_folder='ADHD200_7', mask = 'Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', mac=True)
-    clean_scans(folder = 'ADHD200', 
-                hpc = False, 
-                target_folder='ADHD200_17', 
-                mask = 'Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', 
-                mac=True)
+
+    datasets = [
+        ['ABIDEI', True, 'ABIDEI_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
+        ['ABIDEI', True, 'ABIDEI_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
+        #ABIDE II
+        ['ABIDEII', True, 'ABIDEII_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
+        ['ABIDEII', True, 'ABIDEII_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
+        #ADHD200
+        ['ADHD200', True, 'ADHD200_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
+        ['ADHD200', True, 'ADHD200_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False]
+        ]
+
+    with Parallel(n_jobs=6, verbose=-1) as parallel:
+            #Prepare the jobs
+            delayed_funcs = [delayed(lambda x:clean_scans(folder = x[0], 
+                                                         hpc = x[1], 
+                                                         target_folder=x[2], 
+                                                         mask = x[3], 
+                                                         mac=x[4]))(dataset) for dataset in datasets]
+            #Runs the jobs in parallel
+            parallel(delayed_funcs)
