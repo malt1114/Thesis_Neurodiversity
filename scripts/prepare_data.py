@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 from typing import Dict
 from nilearn import image as nimg
@@ -102,7 +103,7 @@ def read_img_fit_mask(img_path:str, mask, filter_mask:str) -> np.array:
 
     return fitted_mask, img
 
-def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True) -> None:
+def clean_scans(folder: str, hpc:bool, target_folder:str, mask_in, mac: bool = True) -> None:
     """This function takes a folder (str) that is places
        in data.nosync/clean, and cleans it into 
        numpy files.
@@ -131,13 +132,19 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
             #For each session
             for s in sessions:
                 p_files = os.listdir(f"{participant_folder_path}/{p}/{s}/func/")
-                scan_file = f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz"
+                scan_file_one = f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz"
+                scan_file_two = f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-2_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz"
+
                 if f"{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz" in p_files:
                     #e.g participant_folder_path/sub-29177/ses-1/func/sub-29177_ses-1_task-rest_run-1_space-MNI152NLin6ASym_reg-default_desc-preproc_bold.nii.gz
-                    file_list.append((scan_file,
+                    file_list.append((scan_file_one,
                                     f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-1_space-MNI152NLin6ASym_res-3mm_desc-bold_mask.nii.gz"))
                 else:
-                    missing.append(scan_file)
+                    missing.append(scan_file_one)
+                
+                if f"{p}_{s}_task-rest_run-2_space-MNI152NLin6ASym_desc-preproc_bold.nii.gz" in p_files:
+                    file_list.append((scan_file_two,
+                                    f"{participant_folder_path}/{p}/{s}/func/{p}_{s}_task-rest_run-2_space-MNI152NLin6ASym_res-3mm_desc-bold_mask.nii.gz"))
                     
         #Print missing scans
         print('Missing files:', flush = True)
@@ -153,20 +160,25 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
     #Path where to save the cleaned data
     clean_path = f'../data{sync}/clean/{target_folder}'
 
-    mask = nimg.load_img(f'../data{sync}/{mask}')
+    mask = nimg.load_img(f'../data{sync}/{mask_in}')
+
+    size_data = []
 
     for file in tqdm(file_list):
         if type(file) != str:
             #read filter mask
             filter_mask = nimg.load_img(file[1])
-            #read image and fit mask 
+            #read image and fit parcellation mask to scan mask 
             fitted_mask, img = read_img_fit_mask(img_path = file[0],
                                                 mask = mask,
                                                 filter_mask= filter_mask)
+            #Get size of all regions
+            size_data.append([file[0], fitted_mask[(fitted_mask != 0.0) & (fitted_mask != 0)].flatten().shape])
+
             roi_dict = get_roi_dict(mask = fitted_mask, filter_mask = filter_mask)
             roi_arrays = get_image_rois(roi_dict = roi_dict, img = img, standardize = True)
             #Save
-            np.savez_compressed(f"{clean_path}/{file[0].split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
+            np.savez_compressed(f"{clean_path}/{file[0].split('/')[-1][:-7]}", **roi_arrays, allow_pickle=True)
 
         else:
             fitted_mask, img = read_img_fit_mask(img_path = file,
@@ -179,6 +191,7 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask, mac: bool = True
         
             #Save
             np.savez_compressed(f"{clean_path}/{file.split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
+    pd.DataFrame(size_data, columns=['file', '#voxels']).to_csv(f'{clean_path}/#Number of voxels {mask_in}.csv')        
 
 
 if __name__ =="__main__":
@@ -193,13 +206,13 @@ if __name__ =="__main__":
         ['ADHD200', True, 'ADHD200_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
         ['ADHD200', True, 'ADHD200_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False]
         ]
-
+    
     with Parallel(n_jobs=6, verbose=-1) as parallel:
             #Prepare the jobs
             delayed_funcs = [delayed(lambda x:clean_scans(folder = x[0], 
                                                          hpc = x[1], 
                                                          target_folder=x[2], 
-                                                         mask = x[3], 
+                                                         mask_in = x[3], 
                                                          mac=x[4]))(dataset) for dataset in datasets]
             #Runs the jobs in parallel
             parallel(delayed_funcs)

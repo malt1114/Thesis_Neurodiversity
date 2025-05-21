@@ -63,15 +63,15 @@ def get_activations(data_folder:str, mac:bool = True):
         new_header = data.iloc[0] #grab the first row for the header
         data = data[1:] #take the data less the header row
         data.columns = new_header #set the header row as the df header
-        data.to_csv(f"../data{path_addon}/stats/{data_folder}/{sub[:-4]}.csv", sep=";")
+        data.to_csv(f"../data{path_addon}/stats/{data_folder}/{sub[:-7]}.csv", sep=";")
     
     pd.DataFrame(thresholds).to_csv(f"../data{path_addon}/stats/{data_folder}/{data_folder}_activation_thresholds.csv", sep=";")
 
     return None
 
-def get_num_of_voxels_stats(num_of_roi:str):
-    data_files = pd.read_csv(f'../data.nosync/phenotypic/subjects_with_meta_{num_of_roi}.csv', index_col = 'Unnamed: 0')
-    data_files['file_path'] = data_files['file_path'].apply(lambda x: '../../'+x)
+def get_num_of_voxels_stats(num_of_roi:str, path_addon:str):
+    data_files = pd.read_csv(f'../data{path_addon}/phenotypic/subjects_with_meta_{num_of_roi}.csv', index_col = 'Unnamed: 0')
+    data_files['file_path'] = data_files['file_path'].apply(lambda x: '../'+x)
 
     roi_voxels = []
     for index, row in data_files.iterrows():
@@ -83,7 +83,7 @@ def get_num_of_voxels_stats(num_of_roi:str):
         roi_voxels.append(sub_vox)
 
     roi_voxels = pd.DataFrame(roi_voxels)
-    roi_voxels.to_csv(f'../data.nosync/stats/num_of_voxels_pr_timestep_{num_of_roi}.csv')
+    roi_voxels.to_csv(f'../data{path_addon}/stats/num_of_voxels_pr_timestep_{num_of_roi}.csv')
 
 if __name__ =="__main__":
     datasets = ['ABIDEI_7', 'ABIDEI_17', 
@@ -96,5 +96,5 @@ if __name__ =="__main__":
                                                               mac = False))(dataset) for dataset in datasets]
             #Runs the jobs in parallel
             parallel(delayed_funcs)
-    get_num_of_voxels_stats(num_of_roi = '7')
-    get_num_of_voxels_stats(num_of_roi = '17')
+    get_num_of_voxels_stats(num_of_roi = '7', path_addon = "")
+    get_num_of_voxels_stats(num_of_roi = '17', path_addon = "")

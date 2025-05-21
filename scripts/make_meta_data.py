@@ -2,11 +2,15 @@ import pandas as pd
 import numpy as np
 import os
 
-def create_meta_data_file():
+def create_meta_data_file(path_addon:str):
     #Read data
-    abidei = pd.read_csv('../data.nosync/phenotypic/ABIDEI/ABIDEI_phenotypic_NYU.csv')
-    abideii = pd.read_csv('../data.nosync/phenotypic/ABIDEII/ABIDEII-NYU_1.csv')
-    adhd_200 = pd.read_csv('../data.nosync/phenotypic/ADHD200/NYU2025_full_corrected.csv')
+    abidei = pd.read_csv(f'../data{path_addon}/phenotypic/ABIDEI/ABIDEI_phenotypic_NYU.csv')
+    abideii = pd.read_csv(f'../data{path_addon}/phenotypic/ABIDEII/ABIDEII-NYU_1.csv')
+    adhd_200 = pd.read_csv(f'../data{path_addon}/phenotypic/ADHD200/NYU2025_full_corrected.csv')
+    adhd_200_missing = pd.read_csv(f'../data{path_addon}/phenotypic/ADHD200/MissingParticipants.csv')
+    adhd_200_missing = adhd_200_missing.rename({'ID':'ScanDir ID'}, axis = 1)
+    adhd_200 = pd.concat([adhd_200, adhd_200_missing])
+    print(adhd_200.columns)
 
     #CLEAN ABIDEI META
     #Select columns
@@ -73,19 +77,19 @@ def create_meta_data_file():
     #CONCAT AND SAVE
     data = pd.concat([abidei, abideii, adhd_200]).reset_index(drop= True)
     data['Co-Diagnosis'] = data['Co-Diagnosis'].replace({'none': ''})
-    data.to_csv('../data.nosync/phenotypic/meta_data.csv')
+    data.to_csv(f'../data{path_addon}/phenotypic/meta_data.csv')
 
 
-def link_meta_to_files(num_of_roi:str):
-    abidei = f'../data.nosync/clean/ABIDEI_{num_of_roi}'
+def link_meta_to_files(num_of_roi:str, path_addon: str):
+    abidei = f'../data{path_addon}/clean/ABIDEI_{num_of_roi}'
     abidei = os.listdir(abidei)
     abidei = [[i.split('_')[0], 'ABIDEI', f'data.nosync/clean/ABIDEI_{num_of_roi}/'+i] for i in abidei]
 
-    abideii = f'../data.nosync/clean/ABIDEII_{num_of_roi}'
+    abideii = f'../data{path_addon}/clean/ABIDEII_{num_of_roi}'
     abideii = os.listdir(abideii)
     abideii = [[i.split('_')[0], 'ABIDEII', f'data.nosync/clean/ABIDEII_{num_of_roi}/'+i] for i in abideii]
 
-    adhd200 = f'../data.nosync/clean/ADHD200_{num_of_roi}'
+    adhd200 = f'../data{path_addon}/clean/ADHD200_{num_of_roi}'
     adhd200 = os.listdir(adhd200)
     adhd200 = [[i.split('_')[0], 'ADHD200', f'data.nosync/clean/ADHD200_{num_of_roi}/'+i] for i in adhd200]
 
@@ -99,9 +103,9 @@ def link_meta_to_files(num_of_roi:str):
     meta_data['Sub ID'] = meta_data['Sub ID'].apply(lambda x: str(x).zfill(7))
 
     result = pd.merge(data, meta_data, how="left", on=['Sub ID', 'Dataset'])
-    result.to_csv(f'../data.nosync/phenotypic/subjects_with_meta_{num_of_roi}.csv')
+    result.to_csv(f'../data{path_addon}/phenotypic/subjects_with_meta_{num_of_roi}.csv')
 
 if __name__ =="__main__":
-    create_meta_data_file()
-    link_meta_to_files('7')
-    link_meta_to_files('17')
+    create_meta_data_file(path_addon = ".nosync")
+    link_meta_to_files('7', path_addon = ".nosync")
+    link_meta_to_files('17',path_addon = ".nosync")
