@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -14,6 +15,7 @@ class FmriToNetwork():
         self.bins = bins
         self.num_rois = num_rois
         self.roi_names = [f"ROI_{i+1}" for i in range(num_rois)]
+        self.hpc = '' if hpc else '.nosync'
 
     def fill_subject_id(self, subject_id:int):
         """Fills the subject id, 
@@ -120,14 +122,14 @@ class FmriToNetwork():
         #Calculate mean for all of the smallest bin size 
         mean_values_bin = self.calculate_node_bin_feature(bin_intervals = bin_slices[min(self.bins)],
                                                           stat_type='mean')
-        mean_values_bin = self.make_node_feature_to_nx_format(feature_dict = mean_values_bin, 
-                                                              stat_type = 'mean')
 
         #Calculate the variance of the smallest bin size
         var_values_bin = self.calculate_node_bin_feature(bin_intervals = bin_slices[min(self.bins)], 
                                                          stat_type='var')
-        var_values_bin = self.make_node_feature_to_nx_format(feature_dict = var_values_bin, 
-                                                              stat_type = 'var')
+
+        node_attributes = {}
+        for roi in self.roi_names:
+            node_attributes[roi] = {'node_features': var_values_bin[roi+"_var"] + mean_values_bin[roi+"_mean"]}
 
         #EDGE FEATURES
         #Calculates the edge features, as the correlation between two roi's means and variance
@@ -136,24 +138,32 @@ class FmriToNetwork():
 
         #CREATE THE NETWORK
         network = nx.Graph()
-        network.add_weighted_edges_from(edges)
+        network.add_weighted_edges_from(edges, weight='edge_features')
         
         #print(var_values_bin)
-        nx.set_node_attributes(network, mean_values_bin)
-        nx.set_node_attributes(network, var_values_bin)
+        nx.set_node_attributes(network, node_attributes)
 
         print(f"Number of nodes: {network.number_of_nodes()}, Number of edges: {network.number_of_edges()}")
 
         #Save the data
         #TODO: Save network as
-        nx.write_edgelist(network, f"data.nosync/networks/edge_list/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.txt")
+        nx.write_gml(network, f"data{self.hpc}/networks/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
 
 if __name__ =="__main__":
-    FmriToNetwork(subject_id = 50952, 
-                  dataset = 'ABIDEI', 
-                  diagnosis ='ASD', 
-                  bins = [21, 42, 86], 
-                  num_rois = 17,
-                  mean_data = "data.nosync/clean/sub-0050952_ses-1_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.npz", 
-                  hpc=False).create_network()
+    file_data = pd.read_csv('data/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
+    file_data['Co-Diagnosis'] = file_data['Co-Diagnosis'].apply(lambda x: '' if str(x) == 'nan' or str(x) == 'Other' else x)
+    file_data['Full Diagnosis'] = file_data['Diagnosis'] + '-' + file_data['Co-Diagnosis']
+    file_data['Full Diagnosis'] = file_data['Full Diagnosis'].apply(lambda x: x.replace('-', '') if x[-1] == '-' else x)
+    file_data['file_path'] = file_data['file_path'].apply(lambda x: x.replace('.nosync', ''))
+    file_data = file_data[['Sub ID', 'Dataset', 'file_path', 'Full Diagnosis']]
+    file_data = file_data.values.tolist()
+    
+    for sub in tqdm(file_data):
+        FmriToNetwork(subject_id = sub[0], 
+                    dataset = sub[1], 
+                    diagnosis = sub[3], 
+                    bins = [21, 42, 86], 
+                    num_rois = 17,
+                    mean_data = sub[2],
+                    hpc=True).create_network()
 
