@@ -206,6 +206,23 @@ def create_data_split(files:list[str], train_val_size:float):
     participants = pd.DataFrame(participants, columns= ['participant', 'run', 'dataset', 'diagnosis', 'file_end'])
     participants = participants.groupby(['participant', 'dataset', 'diagnosis', 'file_end']).count().reset_index()
 
+    to_remove = pd.read_csv('data.nosync/stats/head_movement/motion_summary_all_subjects.csv')
+    to_remove = to_remove[['Exclude', 'Dataset', 'Sub ID']]
+
+    #Remove one without the a sex
+    to_remove = pd.concat([to_remove, 
+                            pd.DataFrame([{'Exclude':True, 'Dataset':'ADHD200', 'Sub ID': 10044}])]
+                            ).reset_index(drop=True)
+    
+    to_remove['Sub ID'] = to_remove['Sub ID'].apply(lambda x: str(x).zfill(7))
+
+    participants = pd.merge(participants, to_remove, left_on=['dataset', 'participant'], right_on= ['Dataset', 'Sub ID'])
+    participants = participants[participants['Exclude'] != True]
+    participants = participants.drop(['Exclude', 'Dataset', 'Sub ID'], axis= 1)
+
+    #Make sure the participants are only present once
+    participants = participants.groupby(['participant', 'dataset', 'diagnosis', 'file_end']).count().reset_index()
+
     datasets = participants.dataset.unique()
 
     train, test, val = [], [], []
@@ -259,8 +276,12 @@ def create_data_split(files:list[str], train_val_size:float):
 
 
 if __name__ =="__main__":
+    import os
+    os.chdir("../")
+    file_list = os.listdir('data.nosync/networks_multi')
+    create_data_split(files = file_list, train_val_size=0.15)
 
-    datasets = [
+    """datasets = [
         ['ABIDEI', True, 'ABIDEI_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
         ['ABIDEI', True, 'ABIDEI_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
         #ABIDE II
@@ -279,4 +300,4 @@ if __name__ =="__main__":
                                                          mask_in = x[3], 
                                                          mac=x[4]))(dataset) for dataset in datasets]
             #Runs the jobs in parallel
-            parallel(delayed_funcs)
+            parallel(delayed_funcs)"""

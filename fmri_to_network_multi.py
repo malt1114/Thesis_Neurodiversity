@@ -56,22 +56,32 @@ class FmriToNetwork():
             bin_dict[bin] = bin_slices
         return bin_dict
     
-    def calculate_node_bin_feature(self, bin_intervals: list, stat_type:str) -> dict:
+    def calculate_node_bin_feature(self, bin_intervals: list, stat_type:str, as_dict:bool = False) -> dict:
         stat_node_dict = {}
         
         #For each roi
         for roi in self.roi_names:
             temp_data = self.scan_data[roi]
-            roi_bin_stat = []
+            roi_bin_stat = {} if as_dict else []
+            bin_count = 1
             #For each bin interval 
             for interval in bin_intervals:
+                interval_size = interval[1]-interval[0]
                 #Flatten the time steps, for quick calculation
                 bin_data = temp_data[interval[0]:interval[1]].flatten()
                 #Select type of stats
                 if stat_type == 'mean':
-                    roi_bin_stat.append(float(bin_data.mean()))
+                    if as_dict:
+                        roi_bin_stat[f"mean_bin_{interval_size}_{bin_count}"] = float(bin_data.mean())
+                        bin_count += 1
+                    else: 
+                        roi_bin_stat.append(float(bin_data.mean()))
                 elif stat_type == 'var':
-                    roi_bin_stat.append(float(bin_data.var()))
+                    if as_dict:
+                        roi_bin_stat[f"var_bin_{interval_size}_{bin_count}"] = float(bin_data.var())
+                        bin_count += 1
+                    else: 
+                        roi_bin_stat.append(float(bin_data.var()))
                 else:
                     print('The stat_type of calculate_node_bin_feature, har to be in ["var", "mean"]')
             #Add stat for node to the stat node dict
@@ -82,28 +92,25 @@ class FmriToNetwork():
     def calculate_correlation_between_rois(self, bin_slices:dict):
         edge_pairs = sorted(map(sorted, combinations(set(self.roi_names), 2)))
         edge_corr_data = {' '.join(k):list() for k in edge_pairs}
-                
+
+        edges = [] #[u, v, {'feature': value}]
+
         #For each bin
         for bin_size, intervals in bin_slices.items():
             bin_mean_data = self.calculate_node_bin_feature(bin_intervals = intervals, stat_type= 'mean')
             bin_var_data = self.calculate_node_bin_feature(bin_intervals = intervals, stat_type= 'var')
+
             #For each ROI-pair calculate the correlation coef
             for pair in edge_pairs:
                 corr_coef_mean = np.corrcoef(np.array([bin_mean_data[pair[0]+"_mean"], 
                                                        bin_mean_data[pair[1]+"_mean"]]))[0,1]
                 corr_coef_var = np.corrcoef(np.array([bin_var_data[pair[0]+"_var"], 
                                                       bin_var_data[pair[1]+"_var"]]))[0,1]
-                edge_corr_data[' '.join(pair)].append(float(corr_coef_mean))
-                edge_corr_data[' '.join(pair)].append(float(corr_coef_var))
-        #make into networkx format as (u,v,w)
-        edge_data = []
-        for key, value in edge_corr_data.items():
-            u, v = key.split(' ')
-            u, v = int(u.split('_')[1]), int(v.split('_')[1])
-            for i in value:
-                edge_data.append((u, v, i))
-                print((u, v, i))
-        return edge_data
+                
+                edges.append([int(pair[0].split('_')[1]), int(pair[1].split('_')[1]), {'feature_name':f'corr_mean_bin_{bin_size}', 'feature_value':float(corr_coef_mean)}])
+                edges.append([int(pair[0].split('_')[1]), int(pair[1].split('_')[1]), {'feature_name':f'corr_var_bin_{bin_size}', 'feature_value':float(corr_coef_var)}])                
+    
+        return edges
 
     def make_node_feature_to_nx_format(self, feature_dict:dict, stat_type:str):
         nodes_attr_data = {}
@@ -115,7 +122,6 @@ class FmriToNetwork():
                 node_attr[f"{stat_type}_bin_num_{i+1}"] = value[i]
             nodes_attr_data[node] = node_attr
         return nodes_attr_data
-                
 
     def create_network(self):
         #Get bin slices
@@ -124,35 +130,38 @@ class FmriToNetwork():
         #NODE FEATURES
         #Calculate mean for all of the smallest bin size 
         mean_values_bin = self.calculate_node_bin_feature(bin_intervals = bin_slices[min(self.bins)],
-                                                          stat_type='mean')
-
+                                                          stat_type='mean',
+                                                          as_dict = True)
+        
+        
         #Calculate the variance of the smallest bin size
         var_values_bin = self.calculate_node_bin_feature(bin_intervals = bin_slices[min(self.bins)], 
-                                                         stat_type='var')
-
+                                                         stat_type='var',
+                                                         as_dict = True)
+        
         node_attributes = {}
         for roi in self.roi_names:
-            node_attributes[int(roi.split('_')[1])] = {'node_features': var_values_bin[roi+"_var"] + mean_values_bin[roi+"_mean"]}
-
+            node_attributes[int(roi.split('_')[1])] = {**var_values_bin[roi+"_var"], **mean_values_bin[roi+"_mean"]}
+        
         #EDGE FEATURES
         #Calculates the edge features, as the correlation between two roi's means and variance
-        #So the format is [bin_mean_corr, bin_var_corr]
         edges = self.calculate_correlation_between_rois(bin_slices)
 
         #CREATE THE NETWORK
         network = nx.MultiGraph()
-        network.add_weighted_edges_from(edges, weight='edge_features')
-        
-        #print(var_values_bin)
+        for e in edges:
+            network.add_edge(e[0], e[1], **e[2])
+       
+        #network.add_weighted_edges_from(edges)
         nx.set_node_attributes(network, node_attributes)
-        print(nx.get_node_attributes(network, 'node_features'))
-        print(f"Number of nodes: {network.number_of_nodes()}, Number of edges: {network.number_of_edges()}")
+        print(f"Number of nodes: {network.number_of_nodes()}, Number of edges: {network.number_of_edges()}", flush= True)
 
         #Save the data
         #TODO: Save network as
-        nx.write_gml(network, f"data{self.hpc}/networks/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
+        nx.write_gml(network, f"data{self.hpc}/networks_multi/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
 
 if __name__ =="__main__":
+    """
     FmriToNetwork(subject_id = 'test', 
                     dataset = 'test', 
                     diagnosis = 'test', 
@@ -160,7 +169,9 @@ if __name__ =="__main__":
                     num_rois = 17,
                     mean_data = "data.nosync/clean/sub-0050952_ses-1_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.npz",
                     hpc=False).create_network()
-    """file_data = pd.read_csv('data/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
+    
+    """
+    file_data = pd.read_csv('data/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
     file_data['Co-Diagnosis'] = file_data['Co-Diagnosis'].apply(lambda x: '' if str(x) == 'nan' or str(x) == 'Other' else x)
     file_data['Full Diagnosis'] = file_data['Diagnosis'] + '-' + file_data['Co-Diagnosis']
     file_data['Full Diagnosis'] = file_data['Full Diagnosis'].apply(lambda x: x.replace('-', '') if x[-1] == '-' else x)
@@ -176,4 +187,3 @@ if __name__ =="__main__":
                     num_rois = 17,
                     mean_data = sub[2],
                     hpc=True).create_network()
-    """
