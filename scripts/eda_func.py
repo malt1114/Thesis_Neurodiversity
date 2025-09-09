@@ -3,7 +3,7 @@ from tqdm import tqdm
 import seaborn as sns
 import pandas as pd
 import numpy as np
-import scipy
+from scipy import stats
 import math
 import os
 import re
@@ -65,7 +65,7 @@ def get_mean_and_var_stats(num_of_rois:str) -> pd.DataFrame:
 
     return mean_pr_roi, var_pr_roi
 
-def test_dist(data: pd.DataFrame, regions:list[str]) -> None:
+def test_dist(data: pd.DataFrame, regions:list[str], thres = 0.05) -> None:
     """This function test if the values of the ROI are from 
        the same distribution. It does it for both gender and 
        the diagnosis
@@ -75,20 +75,44 @@ def test_dist(data: pd.DataFrame, regions:list[str]) -> None:
         regions (list[str]): a list of regions to test
     """
     #Gender
+    p_values = []
+    results = []
     for roi in regions:
         a, b = data[data['Sex'] == 'Male'][roi], data[data['Sex'] == 'Female'][roi]
-        p_value = float(scipy.stats.ttest_ind(a, b, 
-                                            equal_var = False, 
-                                            alternative='two-sided').pvalue)
-        print(f'{roi} (Between sex): The P-value is {p_value}')
+        p_value = float(stats.ttest_ind(a, b, 
+                                        equal_var = False, 
+                                        alternative='two-sided').pvalue)
+        p_values.append(p_value)
+        results.append([roi, p_value])
+        
+    #Make FDR
+    fdr = stats.false_discovery_control(p_values)
+    for i in range(len(results)):
+        results[i].append(fdr[i])
+
+    #print results
+    for i in results:
+        print(f'{i[0]} (Between sex): The P-value is {i[1]}, after FDR {i[2]}')
 
     print('#'*50)
+    p_values = []
+    results = []
     #Diagnosis
     for roi in regions:
         dia = data['diagnosis'].unique().tolist()
         sampels = [data[data['diagnosis'] == i][roi] for i in dia]
-        p_value = float(scipy.stats.f_oneway(*sampels).pvalue)
-        print(f'{roi} (Between diagnosis): The P-value is {p_value}')
+        p_value = float(stats.f_oneway(*sampels).pvalue)
+        p_values.append(p_value)
+        results.append([roi, p_value])
+    
+    #Make FDR
+    fdr = stats.false_discovery_control(p_values)
+    for i in range(len(results)):
+        results[i].append(fdr[i])
+
+    #print results
+    for i in results:
+        print(f'{i[0]} (Between diagnosis): The P-value is {i[1]}, after FDR {i[2]}')
 
 def plot_small_multiple_rois(data:pd.DataFrame, regions:list[str], title:str, hue_col:str) -> None:
     """This fucntion plot small multiple dist plots

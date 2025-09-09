@@ -5,7 +5,7 @@ import networkx as nx
 from itertools import combinations
 
 import os
-os.chdir("../..")
+os.chdir("..")
 
 class FmriToNetwork():
 
@@ -94,7 +94,6 @@ class FmriToNetwork():
     
     def calculate_correlation_between_rois(self, bin_slices:dict):
         edge_pairs = sorted(map(sorted, combinations(set(self.roi_names), 2)))
-        edge_corr_data = {' '.join(k):list() for k in edge_pairs}
 
         edges = [] #[u, v, {'feature': value}]
 
@@ -149,7 +148,12 @@ class FmriToNetwork():
         #EDGE FEATURES
         #Calculates the edge features, as the correlation between two roi's means and variance
         edges = self.calculate_correlation_between_rois(bin_slices)
-
+        
+        #Calculate the edges for a bin sinze of 1
+        self.bins = [1]
+        bin_one = self.get_bin_slices()
+        edges += self.calculate_correlation_between_rois(bin_one)
+                
         #CREATE THE NETWORK
         network = nx.MultiGraph()
         for e in edges:
@@ -161,8 +165,7 @@ class FmriToNetwork():
 
         #Save the data
         #TODO: Save network as
-        nx.write_gml(network, f"data{self.hpc}/networks_multi/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
-
+        nx.write_gml(network, f"data{self.hpc}/networks_multi_new/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
 if __name__ =="__main__":
     """
     FmriToNetwork(subject_id = 'test', 
@@ -172,8 +175,8 @@ if __name__ =="__main__":
                     num_rois = 17,
                     mean_data = "data.nosync/clean/sub-0050952_ses-1_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.npz",
                     hpc=False).create_network()
-    
     """
+    
     file_data = pd.read_csv('data/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
     file_data['Co-Diagnosis'] = file_data['Co-Diagnosis'].apply(lambda x: '' if str(x) == 'nan' or str(x) == 'Other' else x)
     file_data['Full Diagnosis'] = file_data['Diagnosis'] + '-' + file_data['Co-Diagnosis']
@@ -190,3 +193,4 @@ if __name__ =="__main__":
                     num_rois = 17,
                     mean_data = sub[2],
                     hpc=True).create_network()
+    

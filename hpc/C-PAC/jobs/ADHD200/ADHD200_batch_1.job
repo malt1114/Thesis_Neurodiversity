@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#SBATCH --job-name=ADHD200_batch1
+#SBATCH --output=job.%j.out
+#SBATCH --cpus-per-task=4
+#SBATCH --mem-per-cpu=8GB
+#SBATCH --time=13:00:00 #change time
+#SBATCH --partition=cores
+#SBATCH --mail-type=END,FAIL
+
+module load Anaconda3
+source activate thesis_env
+    
+cpac run s3://fcp-indi/data/Projects/ADHD200/RawDataBIDS/NYU /home/mrla/Thesis/data/preprocessed/ADHD200 participant --participant-label [0021002 0021003 0021005] --n_cpus 2 --mem_gb 16 --platform singularity --pipeline-file /home/mrla/Thesis/scripts/default_pipeline_changed_test.yml
+cpac run s3://fcp-indi/data/Projects/ADHD200/RawDataBIDS/NYU /home/mrla/Thesis/data/preprocessed/ADHD200 participant --participant-label [0021006 0021007 0021008] --n_cpus 2 --mem_gb 16 --platform singularity --pipeline-file /home/mrla/Thesis/scripts/default_pipeline_changed_test.yml
+cpac run s3://fcp-indi/data/Projects/ADHD200/RawDataBIDS/NYU /home/mrla/Thesis/data/preprocessed/ADHD200 participant --participant-label [0021009 0021010 0021013] --n_cpus 2 --mem_gb 16 --platform singularity --pipeline-file /home/mrla/Thesis/scripts/default_pipeline_changed_test.yml
+cpac run s3://fcp-indi/data/Projects/ADHD200/RawDataBIDS/NYU /home/mrla/Thesis/data/preprocessed/ADHD200 participant --participant-label [0021014 0021015 0021016] --n_cpus 2 --mem_gb 16 --platform singularity --pipeline-file /home/mrla/Thesis/scripts/default_pipeline_changed_test.yml
