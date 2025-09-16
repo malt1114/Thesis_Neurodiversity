@@ -1,0 +1,104 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.10.18
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+                - 77
+            "2":
+                - 1
+                - 5
+                - 53
+                - 77
+            "3":
+                - 2
+                - 3
+                - 14
+                - 55
+            "4": 3.10.18
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+        visualize:
+            conf_mat_min_val:
+                panel_config:
+                    fieldSettings:
+                        Actual: Actual
+                        Predicted: Predicted
+                        nPredictions: nPredictions
+                    panelDefId: wandb/confusion_matrix/v1
+                    stringSettings:
+                        title: Confusion Matrix Curve
+                    transform:
+                        name: tableWithLeafColNames
+                    userQuery:
+                        queryFields:
+                            - args:
+                                - name: runSets
+                                  value: ${runSets}
+                              fields:
+                                - fields: []
+                                  name: id
+                                - fields: []
+                                  name: name
+                                - fields: []
+                                  name: _defaultColorIndex
+                                - args:
+                                    - name: tableKey
+                                      value: conf_mat_min_val_table
+                                  fields: []
+                                  name: summaryTable
+                              name: runSets
+                panel_type: Vega2
+activation:
+    value: relu
+att_heads:
+    value: 4
+batch_size:
+    value: 16
+drop_strategy:
+    value: 2
+dropout:
+    value: 0.1
+edge_feature_set:
+    value:
+        - corr_var_bin_21
+        - corr_mean_bin_21
+        - corr_var_bin_42
+        - corr_mean_bin_42
+        - corr_var_bin_84
+        - corr_mean_bin_84
+edge_weight_thres:
+    value: 0.3
+feature_set:
+    value:
+        - var_bin
+        - mean_bin
+hidden_channels_1:
+    value: 64
+layer_norm:
+    value: graph
+learning_rate:
+    value: 0.005
+linear_layer:
+    value: true
+loss_func:
+    value: BCE
+num_epochs:
+    value: 500
+num_of_classes:
+    value: 2
+num_of_features:
+    value: 16
+num_of_layers:
+    value: 2
+optimizer:
+    value: sgd
+random_seed:
+    value: 42
+relative_edge_thres:
+    value: true

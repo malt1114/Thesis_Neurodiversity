@@ -10,19 +10,21 @@ import networkx as nx
 import pandas as pd
 
 #Load dataset
-def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], edge_names:list[str], edge_w_thres:float = None, drop_strategy:int = None, edge_w_abs:bool = False, GAT:bool = False):
+def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], 
+                 edge_names:list[str], edge_w_thres:float = None, 
+                 drop_strategy:int = None, edge_w_abs:bool = False, 
+                 edge_w_relative:int = None,
+                 GAT:bool = False):
 
     node_feature_set = get_node_features(feature_names)
-    #print(feature_names, flush= True)
-    #print(node_feature_set, flush=True)
     
     if num_of_classes == 2:
         class_dict = {'TD': 0, 'ASD-ADHD':1, 'ASD':1, 'ADHD':1}
     else:
         class_dict = {'TD': 0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3}
+
     file_list = pd.read_csv(f'data.nosync/networks_multi{"_gat" if GAT else ""}/{dataset}_set_files.csv')['file'].to_list()
     data_list = []
-
 
     for i in file_list:
         network_class = i.split('/')[-1].split('_')[3]
@@ -33,6 +35,7 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], edge_
             
             for e in G.edges(data= True):
                 u,v, data = e[0], e[1], e[2]
+
                 features_to_remove = []
                 for name, value in data.items():
                     #If not in edge names
@@ -50,6 +53,10 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], edge_
                         #If threshold is not None
                         if edge_w_thres != None and G[u][v][name] < edge_w_thres:
                             G[u][v][name] = 0
+                        
+                        #If relative threshold is not non, and the absolute weight is below
+                        if edge_w_relative != None and abs(G[u][v][name]) < edge_w_relative:
+                            G[u][v][name] = 0
 
                 #Remove not need features
                 for f in features_to_remove:
@@ -62,7 +69,6 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], edge_
                     #If above or equal to thres hold, remove edge
                     if zero_count >= drop_strategy:
                         edges_to_remove.append((u, v)) 
-                
             if drop_strategy != None:
                 for e in edges_to_remove:
                     G.remove_edge(e[0], e[1])
@@ -72,21 +78,22 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], edge_
             for e in G.edges():
                 u, v = e
                 for key, value in G[u][v].items():
-                        feature_name = G[u][v][key]['feature_name']
-                        if edge_w_abs:
-                            G[u][v][key]['feature_value'] = abs(value['feature_value']) if not math.isnan(value['feature_value']) else 0
+                    feature_name = G[u][v][key]['feature_name']
+                    #If absolute values
+                    if edge_w_abs:
+                        G[u][v][key]['feature_value'] = abs(value['feature_value']) if not math.isnan(value['feature_value']) else 0
 
-                        else:
-                            G[u][v][key]['feature_value'] = value['feature_value'] if not math.isnan(value['feature_value']) else 0
-
-                        if edge_w_thres != None:
-                            #Remove edge if no weights or is not used
-                            if G[u][v][key]['feature_value'] < edge_w_thres or feature_name not in edge_names:
-                                e_to_remove.append((u,v,key))
-                        else:
-                            #Remove edge if not used
-                            if feature_name not in edge_names:
-                                e_to_remove.append((u,v,key))
+                    else:
+                        G[u][v][key]['feature_value'] = value['feature_value'] if not math.isnan(value['feature_value']) else 0
+                    #If there is set a threshold for the edge weight
+                    if edge_w_thres != None:
+                        #Remove edge if no weights or is not used
+                        if G[u][v][key]['feature_value'] < edge_w_thres or feature_name not in edge_names:
+                            e_to_remove.append((u,v,key))
+                    else:
+                        #Remove edge if not used
+                        if feature_name not in edge_names:
+                            e_to_remove.append((u,v,key))
 
             G.remove_edges_from(e_to_remove)
         

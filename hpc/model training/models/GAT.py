@@ -21,7 +21,6 @@ class AttentionConvLayer(MessagePassing):
                             heads = heads_)
         self.activation = get_activation(activation)
         norm_dim = out_ * heads_ if concat_ else out_
-        print(f'concat:{concat_}, norm_dim: {norm_dim}')
         self.norm = LayerNorm(norm_dim, mode = norm_)
 
     def forward(self, x, edge_index, edge_attr):
@@ -110,8 +109,8 @@ class GATFLAT(torch.nn.Module):
         
         return x
 
-class GATFLATv2(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, pool_, norm_, out_func_, random_seed, heads_):
+class GATFLAT_MC_DROPOUT(torch.nn.Module):
+    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, norm_, out_func_, random_seed, heads_):
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
@@ -125,12 +124,25 @@ class GATFLATv2(torch.nn.Module):
                                         heads_ = heads_,
                                         concat_ = True)
         
-        self.nn_layer = Linear(layer_1_out*heads_*17, out_)
+        self.dropout = Dropout(p = dropout_rate)
 
+        self.conv2 = AttentionConvLayer(in_ = layer_1_out*heads_, 
+                                        out_ = layer_1_out, #number of classes
+                                        agg_func = aggr.MeanAggregation(),
+                                        activation = activation_, 
+                                        norm_ = norm_,
+                                        heads_ = heads_,
+                                        concat_ = True)
+        
+        self.nn_layer = Linear(layer_1_out*heads_*17, out_)
+        
         self.out_func = get_last_out_function(out_func_)
 
     def forward(self, x, edge_index, edge_attr, data):
         x = self.conv1(x, edge_index, edge_attr)
+        x = self.dropout(x)
+        x = self.conv2(x, edge_index, edge_attr)
+        x = self.dropout(x)
         #reshape to fit linear layer
         x, mask = to_dense_batch(x, data)
         x = x.reshape(x.shape[0], -1)
