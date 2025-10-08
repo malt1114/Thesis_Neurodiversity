@@ -6,7 +6,7 @@ import seaborn as sns
 from collections import Counter
 import matplotlib.pyplot as plt
 
-from sklearn.metrics import roc_curve, auc, f1_score, confusion_matrix
+from sklearn.metrics import roc_curve, auc, f1_score, confusion_matrix, accuracy_score
 from sklearn.preprocessing import label_binarize
 from sklearn.decomposition import PCA
 from torch_geometric.loader import DataLoader
@@ -57,7 +57,7 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
     if loss_name != 'BCE':
         class_labels = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
     else: 
-        class_labels = {0:'TD', 1:'Non-TD'}
+        class_labels = {0:'TD', 1:'Not-TD'}
 
     softmax_data = pd.DataFrame()
     softmax_data['label'] = all_labels
@@ -70,9 +70,13 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
         for key, value in class_labels.items():
                 softmax_data[value] = softmax_data['softmax_values'].apply(lambda x: x[key])
 
-    return [val_loss/len(data), f1_score(all_labels, 
-            all_predictions, average='micro'), y_score, 
-            all_labels, all_predictions, extended_dia,
+    return [val_loss/len(data), 
+            f1_score(all_labels, all_predictions, average='macro'), 
+            accuracy_score(all_labels, all_predictions),
+            y_score, 
+            all_labels, 
+            all_predictions, 
+            extended_dia,
             softmax_data]
 
 def plot_ruc(roc_curve_data, num_of_classes):
@@ -84,7 +88,7 @@ def plot_ruc(roc_curve_data, num_of_classes):
     if num_of_classes == 4:
         class_labels_legends = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
     else: 
-        class_labels_legends = {0:'TD', 1:'Non-TD'}
+        class_labels_legends = {0:'TD', 1:'Not-TD'}
 
     for ax, split_name in zip(axes, split_names):
         y_true = np.array(roc_curve_data[split_name][0])
@@ -116,27 +120,28 @@ def plot_ruc(roc_curve_data, num_of_classes):
 
 def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
     split_names = ['train', 'val', 'test']
-    colors = {0:'red', 1:'green', 2:'orange', 3:'blue'}
 
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 5))
 
-
+    
     for ax, split_name in zip(axes, split_names):
+        class_labels_legends_extended = ['TD', 'ASD-ADHD', 'ASD', 'ADHD', 'TD-Other', 'ASD-Other', 'ADHD-Other']
+
         if num_of_classes == 4:
             class_labels_legends = ['TD', 'ASD-ADHD', 'ASD', 'ADHD']
-            class_labels_legends_extended = ['TD', 'ASD-ADHD', 'ASD', 'ADHD', 'TD-Other', 'ASD-Other', 'ADHD-Other']
             temp_label = {'TD':0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3, 'TD-Other':4, 'ASD-Other': 5, 'ADHD-Other': 6}
         else: 
-            class_labels_legends = ['TD', 'Non-TD']
-            class_labels_legends_extended = ['TD', 'Non-TD', 'TD-Other', 'ASD-Other', 'ADHD-Other']
-            temp_label = {'TD':0, 'ASD-ADHD':1, 'ASD':1, 'ADHD':1, 'TD-Other':2, 'ASD-Other': 3, 'ADHD-Other': 4}
+            class_labels_legends = ['TD', 'Not-TD']
+            temp_label = {'TD':0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3, 'TD-Other':4, 'ASD-Other': 5, 'ADHD-Other': 6}
 
         if extended:
             label_dict[split_name][0] = [temp_label[i] for i in label_dict[split_name][0]] 
 
         cf = confusion_matrix(y_true = label_dict[split_name][0], 
                               y_pred = label_dict[split_name][1])
-
+        
+        #print(label_dict[split_name][0])
+        
         if extended:
             if split_name != 'train':
                 class_labels_legends_extended_temp = class_labels_legends_extended
@@ -146,14 +151,14 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
 
             sns.heatmap(cf[:,:num_of_classes], 
                         yticklabels=class_labels_legends_extended_temp,
-                        xticklabels = class_labels_legends_extended_temp[:num_of_classes],
+                        xticklabels = class_labels_legends,
                         annot=True,
                         fmt='d',
                         ax = ax,
                         cmap='Blues')
         else:
             sns.heatmap(cf, 
-                        yticklabels=class_labels_legends,
+                        yticklabels= class_labels_legends,
                         xticklabels = class_labels_legends,
                         annot=True,
                         fmt='d',
@@ -253,19 +258,19 @@ def evaluate_model(yaml_file:str, model_file:str, drop_strategy:int = None, gat:
     roc_curve_data = {}
     train_softmax_data = None
     for n, d in [('train', train_loader),('val', val_loader), ('test', test_loader)]:
-        l, f1, y_score, y, y_hat, extended_dia, softmax_data = make_interference(data = d,
+        l, f1, acc, y_score, y, y_hat, extended_dia, softmax_data = make_interference(data = d,
                                                                                 model = model, 
                                                                                 loss_name = parameters['loss_name']['value'], 
                                                                                 loss_func = loss_func,
                                                                                 batch_size = parameters['batch_size']['value'])
-        print(f"{n} loss: {l} f1:{f1}")
+        print(f"{n} loss: {l}, accuracy: {round(acc*100, 2)}, f1:{round(f1, 2)}")
         roc_curve_data[n] = [y, y_score]
         cf_data[n] = [y, y_hat]
         cf_ex_data[n] = [extended_dia, y_hat]
 
         if n == 'train':
             train_softmax_data = softmax_data
-    
+
     plot_ruc(roc_curve_data, num_of_classes = parameters['num_of_classes']['value'])
     plot_confusion_matrix(label_dict = cf_data, num_of_classes = parameters['num_of_classes']['value'])
     plot_confusion_matrix(label_dict = cf_ex_data, num_of_classes = parameters['num_of_classes']['value'], extended = True)
@@ -337,8 +342,8 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
 
     before_pca = make_pca(pd.concat(before_model), "BEFORE")
     if num_of_classes == 1:
-        before_pca['label'] = before_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Non-TD')
-        hue_order = ['Non-TD', 'TD']
+        before_pca['label'] = before_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Not-TD')
+        hue_order = ['Not-TD', 'TD']
     else:
         hue_order = ['ADHD', 'ASD', 'ASD-ADHD', 'TD']
     sns.scatterplot(data=before_pca, 
@@ -353,7 +358,7 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
 
     after_pca = make_pca(pd.concat(after_model), "AFTER")
     if num_of_classes == 1:
-        after_pca['label'] = after_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Non-TD')
+        after_pca['label'] = after_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Not-TD')
     sns.scatterplot(data=after_pca, 
                     x="PCA_1", 
                     y="PCA_2", 
@@ -390,8 +395,8 @@ def epistemic(yaml_file:str, model_file:str, dropout:float,
         class_labels_legends = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
         class_index = {'TD': 0, 'ASDADHD':1, 'ASD':2, 'ADHD':3}
     else: 
-        class_labels_legends = {0:'TD', 1:'Non-TD'}
-        class_index = {'TD':0, 'Non-TD':1}
+        class_labels_legends = {0:'TD', 1:'Not-TD'}
+        class_index = {'TD':0, 'Not-TD':1}
 
     model = GATFLAT_MC_DROPOUT(in_ = parameters['num_of_features']['value'], 
                         out_ = num_of_classes, 
