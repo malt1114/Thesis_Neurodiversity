@@ -24,12 +24,16 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str],
         class_dict = {'TD': 0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3}
 
     file_list = pd.read_csv(f'data.nosync/networks_multi{"_gat" if GAT else ""}/{dataset}_set_files.csv')['file'].to_list()
+    meta_data = pd.read_csv(f'data.nosync/phenotypic/meta_data.csv')
+    meta_data['Sub ID'] = meta_data['Sub ID'].apply(lambda x: str(x).zfill(7))
+    meta_data['extended_dia'] = meta_data['Diagnosis'] + '-' + meta_data['Co-Diagnosis']
+
     data_list = []
 
     for i in file_list:
         network_class = i.split('/')[-1].split('_')[3]
         G = nx.read_gml(f'{i}')
-        start_edges = G.number_of_edges()
+
         if GAT: 
             edges_to_remove = []
             
@@ -97,8 +101,14 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str],
 
             G.remove_edges_from(e_to_remove)
         
+        participant = i.split('/')[2].split('_')
+
+        extended_dia = meta_data[(meta_data['Sub ID'] == participant[0]) & (meta_data['Dataset'] == participant[2])]
+
         graph = from_networkx(G, group_node_attrs = node_feature_set, group_edge_attrs= edge_names if GAT else ['feature_value'])
         graph.y = class_dict[network_class]
+
+        graph.extended_dia = participant[3] if str(extended_dia['extended_dia'].tolist()[0]) == 'nan' else str(extended_dia['extended_dia'].tolist()[0])
         data_list.append(graph)
 
     for data in data_list:

@@ -150,3 +150,41 @@ class GATFLAT_MC_DROPOUT(torch.nn.Module):
         x = self.out_func(x)
         
         return x
+
+class GATFLAT_PCA(torch.nn.Module):
+    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, norm_, out_func_, random_seed, heads_):
+        super().__init__()
+        #Set random seeds
+        seed_everything(random_seed)
+        #set_seed(seed = random_seed)
+
+        self.conv1 = AttentionConvLayer(in_ = in_, #number of features
+                                        out_ = layer_1_out, 
+                                        agg_func = aggr.MeanAggregation(),
+                                        activation = activation_,
+                                        norm_ = norm_,
+                                        heads_ = heads_,
+                                        concat_ = True)
+        
+        self.dropout = Dropout(p = dropout_rate)
+
+        self.conv2 = AttentionConvLayer(in_ = layer_1_out*heads_, 
+                                        out_ = layer_1_out, #number of classes
+                                        agg_func = aggr.MeanAggregation(),
+                                        activation = activation_, 
+                                        norm_ = norm_,
+                                        heads_ = heads_,
+                                        concat_ = True)
+        
+        self.nn_layer = Linear(layer_1_out*heads_*17, out_)
+        
+        self.out_func = get_last_out_function(out_func_)
+
+    def get_pca(self, x, edge_index, edge_attr, data):
+        x = self.conv1(x, edge_index, edge_attr)
+        x = self.conv2(x, edge_index, edge_attr)
+        #reshape to fit linear layer
+        x, mask = to_dense_batch(x, data)
+        x = x.reshape(x.shape[0], -1)
+
+        return x

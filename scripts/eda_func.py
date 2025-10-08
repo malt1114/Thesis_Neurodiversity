@@ -156,7 +156,9 @@ def plot_small_multiple_rois(data:pd.DataFrame, regions:list[str], title:str, hu
                         x = temp_rois[0], 
                         hue= hue_col, 
                         ax = axs[x, y], 
-                        legend= add_legend)
+                        legend= add_legend,
+                        palette = 'colorblind',
+                        hue_order= ['ADHD', 'ASD', 'ASD+ADHD', 'TD'])
             
             #Set title and x-axis range 
             axs[x, y].set_title(temp_rois[0])
