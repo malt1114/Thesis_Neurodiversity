@@ -82,7 +82,7 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
 def plot_ruc(roc_curve_data, num_of_classes):
     # Define class labels and split names
     split_names = ['train', 'val', 'test']
-    colors = {0:'red', 1:'green', 2:'orange', 3:'blue'}
+    colors = {0:'#C66526', 1:'#469C76', 2:'#D39233', 3:'#3171AD'}
 
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 5))
     if num_of_classes == 4:
