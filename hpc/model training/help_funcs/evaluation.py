@@ -156,6 +156,7 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
                         fmt='d',
                         ax = ax,
                         cmap='Blues')
+            ax.set_title(split_name.capitalize())
         else:
             sns.heatmap(cf, 
                         yticklabels= class_labels_legends,
@@ -164,6 +165,7 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
                         fmt='d',
                         ax = ax,
                         cmap='Blues')
+            ax.set_title(split_name.capitalize())
     
     plt.tight_layout()
     plt.show()
