@@ -5,6 +5,18 @@ import torch
 from sklearn.metrics import f1_score
 
 def val_loop(model, val_loader, device, loss_func, loss_name):
+    """The validation loop for the mode 
+
+    Args:
+        model (_type_): the model that is being trained
+        val_loader (_type_): the validation set loader
+        device (str): if CPU or GPU
+        loss_func (_type_): the loss function
+        loss_name (_type_): the loss name
+
+    Returns:
+        _type_: loss, f1 score, predicted labels and ground truth labels 
+    """
     model.eval()
     val_loss = 0
     all_predictions = []
@@ -27,15 +39,28 @@ def val_loop(model, val_loader, device, loss_func, loss_name):
             all_predictions += y_hat.round().tolist()
         else:
             all_predictions += torch.argmax(y_hat, dim=-1).tolist()
+        
         all_labels += batch.y.tolist()
 
     return val_loss/len(val_loader), f1_score(all_labels, all_predictions, average='micro'), [all_labels, all_predictions]
 
 def train_loop(model, train_loader, optimizer, device, loss_func, loss_name):
+    """The training loop for the mode 
+
+    Args:
+        model (_type_): the model that is being trained
+        train_loader (_type_): the train set loader
+        optimizer (_type_): the optimizer
+        device (str): if CPU or GPU
+        loss_func (_type_): the loss function
+        loss_name (_type_): the loss name
+
+    Returns:
+        _type_: loss, f1 score, predicted labels and ground truth labels 
+    """
     model.train()
     train_loss = 0.0
     for batch in train_loader:
-        #batch = batch.to(device, non_blocking=True)
         x, edge_index, edge_weight, data = batch.x.to(device), batch.edge_index.to(device), batch.edge_attr.to(device), batch.batch.to(device)
 
         optimizer.zero_grad()

@@ -6,19 +6,36 @@ import seaborn as sns
 from collections import Counter
 import matplotlib.pyplot as plt
 
+#Model related imports
 from sklearn.metrics import roc_curve, auc, f1_score, confusion_matrix, accuracy_score
 from sklearn.preprocessing import label_binarize
 from sklearn.decomposition import PCA
 from torch_geometric.loader import DataLoader
 from torch_geometric.utils import to_dense_batch
 
+#Model classes
 from models.GCN import GCN
 from models.GAT import GATFLAT, GATFLAT_MC_DROPOUT, GATFLAT_PCA
 
+#Other functions
 from help_funcs.data_func import load_dataset
 from help_funcs.param import get_loss_function
 
 def make_interference(data, model, loss_name, loss_func, batch_size):
+    """Makes the interferencem and returns the scores, predictions and
+       softmax values
+
+    Args:
+        data (_type_): the data loader
+        model (_type_): the PyG model
+        loss_name (_type_): the name of the loss function
+        loss_func (_type_): the loss function
+        batch_size (_type_): the batch size
+
+    Returns:
+        different information: loss, f1-score, accuracy, labels, predictions, extended labels, softmax_data 
+    """
+
     val_loss = 0
     all_predictions = []
     extended_dia = []
@@ -80,6 +97,13 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
             softmax_data]
 
 def plot_ruc(roc_curve_data, num_of_classes, fig_name = None):
+    """Plots the ruc curves
+
+    Args:
+        roc_curve_data (dict): data for each class and their softmax values
+        num_of_classes (int): number of classes
+        fig_name (_type_, optional): the figure name used when saved. Defaults to None.
+    """
     # Define class labels and split names
     split_names = ['train', 'val', 'test']
     colors = {0:'#C66526', 1:'#469C76', 2:'#D39233', 3:'#3171AD'}
@@ -126,6 +150,14 @@ def plot_ruc(roc_curve_data, num_of_classes, fig_name = None):
     
 
 def plot_confusion_matrix(num_of_classes, label_dict, extended = False, fig_name = None):
+    """Plots the confusion matrices
+
+    Args:
+        num_of_classes (int): the number of classes
+        label_dict (type): the labels for all three datasets, both predicted and ground true
+        extended (bool, optional): if it should used the extended diagnosis. Defaults to False.
+        fig_name (_type_, optional): the save name of the figure. Defaults to None.
+    """
     split_names = ['train', 'val', 'test']
 
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
@@ -194,6 +226,14 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False, fig_name
     plt.show()
 
 def get_parameters(yaml_file:str):
+    """Maps the dict (yaml_file) to the right names
+
+    Args:
+        yaml_file (str): path to the yaml file with model metadata
+
+    Returns:
+        model specifications (dict): dict with the model specifications
+    """
     with open(yaml_file, 'r') as file:
         parameters = yaml.safe_load(file)
 
@@ -219,6 +259,17 @@ def get_parameters(yaml_file:str):
     return parameters
 
 def get_data(parameters, drop_strategy, gat, dataset):
+    """Loads the data for the model
+
+    Args:
+        parameters (dict): the model config parameters
+        drop_strategy (int, None): the drop strategy used
+        gat (bool): if model is a GAT or not
+        dataset (str): if train, test or val
+
+    Returns:
+        list (object): list of graph objects
+    """
     data = load_dataset(dataset = dataset, 
                             num_of_classes = parameters['num_of_classes']['value'],
                             feature_names = parameters['feature_names']['value'],
@@ -232,6 +283,19 @@ def get_data(parameters, drop_strategy, gat, dataset):
     return data
 
 def evaluate_model(yaml_file:str, model_file:str, drop_strategy:int = None, gat:bool = False):
+    """This function that evaluates the models. 
+       It loads the data sets, and model parameters, followed 
+       by plotting the roc curves and the confusion matrices
+
+    Args:
+        yaml_file (str): the path to model parameters from the yaml files
+        model_file (str): the path to model weights
+        drop_strategy (int, optional): if use drop strategy. Defaults to None.
+        gat (bool, optional): if GAT. Defaults to False.
+
+    Returns:
+        softmax data: softmax data for each data set
+    """
     parameters = get_parameters(yaml_file = yaml_file)
 
     train_data = get_data(parameters, drop_strategy, gat, 'train')
@@ -307,6 +371,15 @@ def evaluate_model(yaml_file:str, model_file:str, drop_strategy:int = None, gat:
     return train_softmax_data
 
 def make_pca(data, info):
+    """Creates a PCA, and returns the PCA data
+
+    Args:
+        data (_type_): the data to PCA
+        info (_type_): the dataset
+
+    Returns:
+        _type_: the PCA transformed data
+    """
     data['label'] = data['label'].replace({'ADHD-Other': 'ADHD', 
                                             'ASD-Other': 'ASD'})
     pca = PCA(n_components=2)
@@ -319,6 +392,18 @@ def make_pca(data, info):
     return pca_data
 
 def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:bool = False, dataset:str = None):
+    """Creates the PCA plot for the input data and the model represntation (only GAT)
+
+    Args:
+        yaml_file (str): the path to model specifications
+        model_file (str): the path to model weights
+        drop_strategy (int, optional): the strategy used for dropping edges. Defaults to None.
+        gat (bool, optional): if GAT or not. Defaults to False.
+        dataset (str, optional): the data set to PCA. Defaults to None.
+
+    Returns:
+        DataFrame: the dataframes with the PCA data
+    """
     parameters = get_parameters(yaml_file = yaml_file)
 
     data = get_data(parameters, drop_strategy, gat, dataset)
@@ -416,10 +501,23 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
 
     return pd.concat(before_model), pd.concat(after_model)
 
-
 def epistemic(yaml_file:str, model_file:str, dropout:float, 
               forward_passes:int, drop_strategy:int = None, gat:bool = False,
               data_set:str = None):
+    """This function loads a special model that uses dropout while during interference.
+
+    Args:
+        yaml_file (str): the path to model specifications
+        model_file (str): the path to model weights
+        dropout (float): the dropout rate
+        forward_passes (int): how many "sudo" models to run
+        drop_strategy (int, optional): the drop strategy used. Defaults to None.
+        gat (bool, optional): if GAT or not. Defaults to False.
+        data_set (str, optional): the dataset to investigate. Defaults to None.
+
+    Returns:
+        _type_: data with the predictions (softmax)
+    """
 
     parameters = get_parameters(yaml_file = yaml_file)
 

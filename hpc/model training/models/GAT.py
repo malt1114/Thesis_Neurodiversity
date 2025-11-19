@@ -12,6 +12,18 @@ from help_funcs.param import (get_activation,
 
 class AttentionConvLayer(MessagePassing):
     def __init__(self, in_, out_, agg_func, activation, heads_, concat_, norm_):
+        """The attention convolutional layer
+
+        Args:
+            in_ (int): input node features
+            out_ (int): output node features
+            agg_func (str): aggregation function
+            activation (str): activation function
+            heads_ (int): number of attention heads
+            concat_ (bool, True): if attention heads should be concatenated or not
+            norm_ (str): type of normalization (graph or node)
+        """
+
         super().__init__(agg_func)
         self.conv = GATConv(in_, 
                             out_, 
@@ -30,7 +42,21 @@ class AttentionConvLayer(MessagePassing):
         return x
 
 class GAT(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, pool_, norm_, out_func_, random_seed, heads_):
+    def __init__(self, in_:int, out_:int, layer_1_out:int, dropout_rate:float, activation_:str, pool_:str, norm_:str, out_func_:str, random_seed:int, heads_:int):
+        """Used to initialize the GAT model
+
+        Args:
+            in_ (int): the input shape of node features
+            out_ (int): the number of features out
+            layer_1_out (int): the size of hidden layer
+            dropout_rate (float): dropout rate
+            activation_ (str): the activation function
+            pool_ (str): the pooling function
+            norm_ (str): the normalization type
+            out_func_ (str): the last activation function
+            random_seed (int): the random seed
+            heads_ (int): number of attention heads
+        """
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
@@ -69,7 +95,20 @@ class GAT(torch.nn.Module):
         return x
     
 class GATFLAT(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, norm_, out_func_, random_seed, heads_):
+    def __init__(self, in_:int, out_:int, layer_1_out:int, dropout_rate:float, activation_:str, norm_:str, out_func_:str, random_seed:int, heads_:int):
+        """Used to initialize the GAT with a NN layer
+
+        Args:
+            in_ (int): the input shape of node features
+            out_ (int): the number of features out
+            layer_1_out (int): the size of hidden layer
+            dropout_rate (float): dropout rate
+            activation_ (str): the activation function
+            norm_ (str): the normalization type
+            out_func_ (str): the last activation function
+            random_seed (int): the random seed
+            heads_ (int): number of attention heads
+        """
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
@@ -110,7 +149,20 @@ class GATFLAT(torch.nn.Module):
         return x
 
 class GATFLAT_MC_DROPOUT(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, norm_, out_func_, random_seed, heads_):
+    def __init__(self, in_:int, out_:int, layer_1_out:int, dropout_rate:float, activation_:str, norm_:str, out_func_:str, random_seed:int, heads_:int):
+        """Used to initialize the GAT with dropout during interference
+
+        Args:
+            in_ (int): the input shape of node features
+            out_ (int): the number of features out
+            layer_1_out (int): the size of hidden layer
+            dropout_rate (float): dropout rate
+            activation_ (str): the activation function
+            norm_ (str): the normalization type
+            out_func_ (str): the last activation function
+            random_seed (int): the random seed
+            heads_ (int): number of attention heads
+        """
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
@@ -152,7 +204,20 @@ class GATFLAT_MC_DROPOUT(torch.nn.Module):
         return x
 
 class GATFLAT_PCA(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, norm_, out_func_, random_seed, heads_):
+    def __init__(self, in_:int, out_:int, layer_1_out:int, dropout_rate:float, activation_:str, norm_:str, out_func_:str, random_seed:int, heads_:int):
+        """Used to initialize the GAT readout at before NN layer
+
+        Args:
+            in_ (int): the input shape of node features
+            out_ (int): the number of features out
+            layer_1_out (int): the size of hidden layer
+            dropout_rate (float): dropout rate
+            activation_ (str): the activation function
+            norm_ (str): the normalization type
+            out_func_ (str): the last activation function
+            random_seed (int): the random seed
+            heads_ (int): number of attention heads
+        """
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
