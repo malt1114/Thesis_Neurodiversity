@@ -6,19 +6,36 @@ import seaborn as sns
 from collections import Counter
 import matplotlib.pyplot as plt
 
+#Model related imports
 from sklearn.metrics import roc_curve, auc, f1_score, confusion_matrix, accuracy_score
 from sklearn.preprocessing import label_binarize
 from sklearn.decomposition import PCA
 from torch_geometric.loader import DataLoader
 from torch_geometric.utils import to_dense_batch
 
+#Model classes
 from models.GCN import GCN
 from models.GAT import GATFLAT, GATFLAT_MC_DROPOUT, GATFLAT_PCA
 
+#Other functions
 from help_funcs.data_func import load_dataset
 from help_funcs.param import get_loss_function
 
 def make_interference(data, model, loss_name, loss_func, batch_size):
+    """Makes the interferencem and returns the scores, predictions and
+       softmax values
+
+    Args:
+        data (_type_): the data loader
+        model (_type_): the PyG model
+        loss_name (_type_): the name of the loss function
+        loss_func (_type_): the loss function
+        batch_size (_type_): the batch size
+
+    Returns:
+        different information: loss, f1-score, accuracy, labels, predictions, extended labels, softmax_data 
+    """
+
     val_loss = 0
     all_predictions = []
     extended_dia = []
@@ -55,7 +72,7 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
         extended_dia += batch.extended_dia
 
     if loss_name != 'BCE':
-        class_labels = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
+        class_labels = {0:'TD', 1:'ASD+ADHD', 2:'ASD', 3:'ADHD'}
     else: 
         class_labels = {0:'TD', 1:'Not-TD'}
 
@@ -79,16 +96,23 @@ def make_interference(data, model, loss_name, loss_func, batch_size):
             extended_dia,
             softmax_data]
 
-def plot_ruc(roc_curve_data, num_of_classes):
+def plot_ruc(roc_curve_data, num_of_classes, fig_name = None):
+    """Plots the ruc curves
+
+    Args:
+        roc_curve_data (dict): data for each class and their softmax values
+        num_of_classes (int): number of classes
+        fig_name (_type_, optional): the figure name used when saved. Defaults to None.
+    """
     # Define class labels and split names
     split_names = ['train', 'val', 'test']
     colors = {0:'#C66526', 1:'#469C76', 2:'#D39233', 3:'#3171AD'}
 
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 5))
     if num_of_classes == 4:
-        class_labels_legends = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
+        class_labels_legends = {0:'TD', 1:'ASD+ADHD', 2:'ASD', 3:'ADHD'}
     else: 
-        class_labels_legends = {0:'TD', 1:'Not-TD'}
+        class_labels_legends = {0:'TD', 1:'Non-TD'}
 
     for ax, split_name in zip(axes, split_names):
         y_true = np.array(roc_curve_data[split_name][0])
@@ -100,42 +124,58 @@ def plot_ruc(roc_curve_data, num_of_classes):
         tpr = dict()
         roc_auc = dict()
 
-        for i in range(num_of_classes if num_of_classes != 2 else 1):
+        for i in [3, 2, 1, 0] if num_of_classes != 2 else [0]:
             fpr[i], tpr[i], _ = roc_curve(y_true_bin[:, i], y_probs[:, i])
             roc_auc[i] = auc(fpr[i], tpr[i])
-            ax.plot(fpr[i], tpr[i], color=colors[i], lw=2,
+            ax.plot(fpr[i], tpr[i], color=colors[i], lw=3,
                     label=f'{class_labels_legends[i]} (AUC = {roc_auc[i]:.2f})')
-
-        ax.plot([0, 1], [0, 1], 'k--', lw=1)
+            
+        ax.plot([0, 1], [0, 1], 'k--', lw=2)
         ax.set_xlim([0.0, 1.0])
         ax.set_ylim([0.0, 1.05])
-        ax.set_xlabel('False Positive Rate')
-        ax.set_ylabel('True Positive Rate')
-        ax.set_title(f'{split_name.capitalize()} ROC Curve')
-        ax.legend(loc='lower right')
-        ax.grid(True)
+        ax.set_xlabel('False Positive Rate', fontsize=18)
+        ax.set_ylabel('True Positive Rate', fontsize=18)
+        ax.tick_params(axis='both', labelsize=16)
+
+        split_name = 'Validation' if split_name.lower() == 'val' else split_name
+        ax.set_title(f'{split_name.capitalize()} ROC Curve', fontsize=20)
+        ax.legend(loc='lower right', fontsize=14)
+
+    axes[1].set_ylabel('')
+    axes[2].set_ylabel('')
 
     plt.tight_layout()
+    plt.savefig(f'pics/{fig_name}.svg', dpi = 300)
     plt.show()
+    
 
-def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
+def plot_confusion_matrix(num_of_classes, label_dict, extended = False, fig_name = None):
+    """Plots the confusion matrices
+
+    Args:
+        num_of_classes (int): the number of classes
+        label_dict (type): the labels for all three datasets, both predicted and ground true
+        extended (bool, optional): if it should used the extended diagnosis. Defaults to False.
+        fig_name (_type_, optional): the save name of the figure. Defaults to None.
+    """
     split_names = ['train', 'val', 'test']
 
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 5))
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
 
     
     for ax, split_name in zip(axes, split_names):
-        class_labels_legends_extended = ['TD', 'ASD-ADHD', 'ASD', 'ADHD', 'TD-Other', 'ASD-Other', 'ADHD-Other']
+        class_labels_legends_extended = ['TD', 'ASD+ADHD', 'ASD', 'ADHD', 'TD+Other', 'ASD+Other', 'ADHD+Other']
 
         if num_of_classes == 4:
-            class_labels_legends = ['TD', 'ASD-ADHD', 'ASD', 'ADHD']
-            temp_label = {'TD':0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3, 'TD-Other':4, 'ASD-Other': 5, 'ADHD-Other': 6}
+            class_labels_legends = ['TD', 'ASD+ADHD', 'ASD', 'ADHD']
+            temp_label = {'TD':0, 'ASD+ADHD':1, 'ASD':2, 'ADHD':3, 'TD+Other':4, 'ASD+Other': 5, 'ADHD+Other': 6}
         else: 
-            class_labels_legends = ['TD', 'Not-TD']
-            temp_label = {'TD':0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3, 'TD-Other':4, 'ASD-Other': 5, 'ADHD-Other': 6}
+            class_labels_legends = ['TD', 'Non-TD']
+            temp_label = {'TD':0, 'ASD+ADHD':1, 'ASD':2, 'ADHD':3, 'TD+Other':4, 'ASD+Other': 5, 'ADHD+Other': 6}
 
         if extended:
-            label_dict[split_name][0] = [temp_label[i] for i in label_dict[split_name][0]] 
+            print(label_dict[split_name][0])
+            label_dict[split_name][0] = [temp_label[i.replace('-', '+')] for i in label_dict[split_name][0]] 
 
         cf = confusion_matrix(y_true = label_dict[split_name][0], 
                               y_pred = label_dict[split_name][1])
@@ -145,7 +185,7 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
         if extended:
             if split_name != 'train':
                 class_labels_legends_extended_temp = class_labels_legends_extended
-                class_labels_legends_extended_temp.remove('TD-Other')
+                class_labels_legends_extended_temp.remove('TD+Other')
             else:
                 class_labels_legends_extended_temp = class_labels_legends_extended
 
@@ -156,8 +196,15 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
                         fmt='d',
                         ax = ax,
                         cmap='Blues',
+                        annot_kws={'size': 18},
                         cbar=False)
-            ax.set_title(split_name.capitalize())
+            split_name = 'Validation' if split_name.lower() == 'val' else split_name
+            ax.set_title(split_name.capitalize(), fontsize=20)
+            # Increase tick label font size
+            ax.tick_params(axis='x', labelsize=16)
+            ax.tick_params(axis='y', labelsize=16)
+
+
         else:
             sns.heatmap(cf, 
                         yticklabels= class_labels_legends,
@@ -166,13 +213,27 @@ def plot_confusion_matrix(num_of_classes, label_dict, extended = False):
                         fmt='d',
                         ax = ax,
                         cmap='Blues',
+                        annot_kws={'size': 18},
                         cbar=False)
-            ax.set_title(split_name.capitalize())
+            split_name = 'Validation' if split_name.lower() == 'val' else split_name
+            ax.set_title(split_name.capitalize(), fontsize=20)
+            ax.tick_params(axis='x', labelsize=16)
+            ax.tick_params(axis='y', labelsize=16)
     
     plt.tight_layout()
+    if not extended:
+        plt.savefig(f'pics/{fig_name}.svg', dpi = 300)
     plt.show()
 
 def get_parameters(yaml_file:str):
+    """Maps the dict (yaml_file) to the right names
+
+    Args:
+        yaml_file (str): path to the yaml file with model metadata
+
+    Returns:
+        model specifications (dict): dict with the model specifications
+    """
     with open(yaml_file, 'r') as file:
         parameters = yaml.safe_load(file)
 
@@ -198,6 +259,17 @@ def get_parameters(yaml_file:str):
     return parameters
 
 def get_data(parameters, drop_strategy, gat, dataset):
+    """Loads the data for the model
+
+    Args:
+        parameters (dict): the model config parameters
+        drop_strategy (int, None): the drop strategy used
+        gat (bool): if model is a GAT or not
+        dataset (str): if train, test or val
+
+    Returns:
+        list (object): list of graph objects
+    """
     data = load_dataset(dataset = dataset, 
                             num_of_classes = parameters['num_of_classes']['value'],
                             feature_names = parameters['feature_names']['value'],
@@ -211,6 +283,19 @@ def get_data(parameters, drop_strategy, gat, dataset):
     return data
 
 def evaluate_model(yaml_file:str, model_file:str, drop_strategy:int = None, gat:bool = False):
+    """This function that evaluates the models. 
+       It loads the data sets, and model parameters, followed 
+       by plotting the roc curves and the confusion matrices
+
+    Args:
+        yaml_file (str): the path to model parameters from the yaml files
+        model_file (str): the path to model weights
+        drop_strategy (int, optional): if use drop strategy. Defaults to None.
+        gat (bool, optional): if GAT. Defaults to False.
+
+    Returns:
+        softmax data: softmax data for each data set
+    """
     parameters = get_parameters(yaml_file = yaml_file)
 
     train_data = get_data(parameters, drop_strategy, gat, 'train')
@@ -274,14 +359,27 @@ def evaluate_model(yaml_file:str, model_file:str, drop_strategy:int = None, gat:
 
         if n == 'train':
             train_softmax_data = softmax_data
+    plot_name = yaml_file
+    plot_name = plot_name.split('/')[1].split('.')[0]
+    
+    plot_name = plot_name.split('_')[0] + '_' +plot_name.split('_')[1].lower()
 
-    plot_ruc(roc_curve_data, num_of_classes = parameters['num_of_classes']['value'])
-    plot_confusion_matrix(label_dict = cf_data, num_of_classes = parameters['num_of_classes']['value'])
+    plot_ruc(roc_curve_data, num_of_classes = parameters['num_of_classes']['value'], fig_name = f"{plot_name}_roc")
+    plot_confusion_matrix(label_dict = cf_data, num_of_classes = parameters['num_of_classes']['value'], fig_name = f"{plot_name}_confusion_matrix")
     plot_confusion_matrix(label_dict = cf_ex_data, num_of_classes = parameters['num_of_classes']['value'], extended = True)
 
     return train_softmax_data
 
 def make_pca(data, info):
+    """Creates a PCA, and returns the PCA data
+
+    Args:
+        data (_type_): the data to PCA
+        info (_type_): the dataset
+
+    Returns:
+        _type_: the PCA transformed data
+    """
     data['label'] = data['label'].replace({'ADHD-Other': 'ADHD', 
                                             'ASD-Other': 'ASD'})
     pca = PCA(n_components=2)
@@ -294,6 +392,18 @@ def make_pca(data, info):
     return pca_data
 
 def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:bool = False, dataset:str = None):
+    """Creates the PCA plot for the input data and the model represntation (only GAT)
+
+    Args:
+        yaml_file (str): the path to model specifications
+        model_file (str): the path to model weights
+        drop_strategy (int, optional): the strategy used for dropping edges. Defaults to None.
+        gat (bool, optional): if GAT or not. Defaults to False.
+        dataset (str, optional): the data set to PCA. Defaults to None.
+
+    Returns:
+        DataFrame: the dataframes with the PCA data
+    """
     parameters = get_parameters(yaml_file = yaml_file)
 
     data = get_data(parameters, drop_strategy, gat, dataset)
@@ -346,10 +456,10 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
 
     before_pca = make_pca(pd.concat(before_model), "BEFORE")
     if num_of_classes == 1:
-        before_pca['label'] = before_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Not-TD')
-        hue_order = ['Not-TD', 'TD']
+        before_pca['label'] = before_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Non-TD')
+        hue_order = ['Non-TD', 'TD']
     else:
-        hue_order = ['ADHD', 'ASD', 'ASD-ADHD', 'TD']
+        hue_order = ['ADHD', 'ASD', 'ASD+ADHD', 'TD']
     sns.scatterplot(data=before_pca, 
                     x="PCA_1", 
                     y="PCA_2", 
@@ -358,11 +468,13 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
                     palette = 'colorblind',
                     hue_order = hue_order,
                     legend = False)
-    axes[0].set_title('Before')
+    
+    axes[0].set_title('Before', fontsize = 15)
 
     after_pca = make_pca(pd.concat(after_model), "AFTER")
     if num_of_classes == 1:
-        after_pca['label'] = after_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Not-TD')
+        after_pca['label'] = after_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Non-TD')
+    
     sns.scatterplot(data=after_pca, 
                     x="PCA_1", 
                     y="PCA_2", 
@@ -370,18 +482,42 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
                     ax = axes[1],
                     palette = 'colorblind',
                     hue_order = hue_order)
-    axes[1].set_title('After')
+
+    axes[1].legend(title="Diagnosis", title_fontsize=13)
+    axes[1].set_title('After', fontsize = 15)
+
+    for ax in axes.flatten():
+         ax.set_xlabel(ax.get_xlabel(), fontsize=14)
+         ax.set_ylabel(ax.get_ylabel(), fontsize=14)
+         ax.tick_params(axis='both', labelsize=13)
+
+    plot_name = yaml_file
+    plot_name = plot_name.split('/')[1].split('.')[0]
+    plot_name = plot_name.split('_')[0] + '_' +plot_name.split('_')[1].lower()
 
     plt.tight_layout()
+    plt.savefig(f'pics/{plot_name}_pca.svg', dpi = 300)
     plt.show()
 
-
     return pd.concat(before_model), pd.concat(after_model)
-
 
 def epistemic(yaml_file:str, model_file:str, dropout:float, 
               forward_passes:int, drop_strategy:int = None, gat:bool = False,
               data_set:str = None):
+    """This function loads a special model that uses dropout while during interference.
+
+    Args:
+        yaml_file (str): the path to model specifications
+        model_file (str): the path to model weights
+        dropout (float): the dropout rate
+        forward_passes (int): how many "sudo" models to run
+        drop_strategy (int, optional): the drop strategy used. Defaults to None.
+        gat (bool, optional): if GAT or not. Defaults to False.
+        data_set (str, optional): the dataset to investigate. Defaults to None.
+
+    Returns:
+        _type_: data with the predictions (softmax)
+    """
 
     parameters = get_parameters(yaml_file = yaml_file)
 
@@ -396,7 +532,7 @@ def epistemic(yaml_file:str, model_file:str, dropout:float,
         num_of_classes = parameters['num_of_classes']['value']
     
     if num_of_classes == 4:
-        class_labels_legends = {0:'TD', 1:'ASD-ADHD', 2:'ASD', 3:'ADHD'}
+        class_labels_legends = {0:'TD', 1:'ASD+ADHD', 2:'ASD', 3:'ADHD'}
         class_index = {'TD': 0, 'ASDADHD':1, 'ASD':2, 'ADHD':3}
     else: 
         class_labels_legends = {0:'TD', 1:'Not-TD'}

@@ -11,6 +11,15 @@ from help_funcs.param import (get_activation,
 
 class ConvLayer(MessagePassing):
     def __init__(self, in_, out_, agg_func, activation, norm_):
+        """The GCN convolutional layer
+
+        Args:
+            in_ (int): input feature size
+            out_ (int): output feature size
+            agg_func (_type_): the aggregation function (default is mean)
+            activation (str): the activation function used
+            norm_ (str): the type of normalization
+        """
         super().__init__(agg_func)
         self.conv = GCNConv(in_, 
                             out_, 
@@ -28,7 +37,20 @@ class ConvLayer(MessagePassing):
         return x
 
 class GCN(torch.nn.Module):
-    def __init__(self, in_, out_, layer_1_out, dropout_rate, activation_, pool_, norm_, out_func_, random_seed):
+    def __init__(self, in_:int, out_:int, layer_1_out:int, dropout_rate:float, activation_:str, pool_:str, norm_:str, out_func_:str, random_seed:int):
+        """Used to initialize the GCN model
+
+        Args:
+            in_ (int): the input shape of node features
+            out_ (int): the number of features out
+            layer_1_out (int): the size of hidden layer
+            dropout_rate (float): dropout rate
+            activation_ (str): the activation function
+            pool_ (str): the pooling function
+            norm_ (str): the normalization type
+            out_func_ (str): the last activation function
+            random_seed (int): the random seed
+        """               
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)

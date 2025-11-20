@@ -9,7 +9,6 @@ import wandb
 import numpy as np 
 import random
 import argparse
-import copy
 
 #New imports
 from help_funcs.param import get_optimizer, get_loss_function
@@ -18,11 +17,19 @@ from help_funcs.data_func import get_node_features, load_dataset
 from models.GCN import GCN
 
 def seed_worker(worker_id):
+    """This function seeds a worker, when loading data.
+
+    Args:
+        worker_id (int): id for the worker
+    """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
 def main():
+    """This fuction trains a model with specific hyperparameters
+       It calls the wandb to get the parameters, and trains the GCN
+    """
     run = wandb.init()
     config = wandb.config
 

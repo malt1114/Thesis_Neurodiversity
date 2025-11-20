@@ -16,11 +16,20 @@ from help_funcs.data_func import load_dataset
 from models.GAT import GATFLAT
 
 def seed_worker(worker_id):
+    """This function seeds a worker, when loading data.
+
+    Args:
+        worker_id (int): id for the worker
+    """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
 def main():
+    """This fuction trains a model with specific hyperparameters
+       It calls the wandb to get the parameters, and trains the GATFLAT, 
+       which is the model
+    """
     run =  wandb.init()
     config = wandb.config
     

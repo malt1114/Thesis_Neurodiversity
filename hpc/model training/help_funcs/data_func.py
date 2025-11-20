@@ -1,5 +1,6 @@
 #Python basic
 import math
+import os 
 
 #Torch
 import torch
@@ -9,12 +10,30 @@ from torch_geometric.utils import from_networkx
 import networkx as nx
 import pandas as pd
 
+
 #Load dataset
 def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str], 
                  edge_names:list[str], edge_w_thres:float = None, 
                  drop_strategy:int = None, edge_w_abs:bool = False, 
                  edge_w_relative:int = None,
                  GAT:bool = False):
+    """This function loads the dataset, and applies the different
+       edge weight thresholds, selects node and edge features
+
+    Args:
+        dataset (str): train, val or test set
+        num_of_classes (int): the number of classes
+        feature_names (list[str]): the node features
+        edge_names (list[str]): the edge weigths use, e.g. mean_82
+        edge_w_thres (float, optional): if a threshold should be set for the edge weights. Defaults to None.
+        drop_strategy (int, optional): if a drop strategy should be set. Defaults to None.
+        edge_w_abs (bool, optional): if edge weights is absolute or not. Defaults to False.
+        edge_w_relative (int, optional): if a relative edge weigth threshold should be used. Defaults to None.
+        GAT (bool, optional): if the model is GAT or not. Defaults to False.
+
+    Returns:
+        list (objects): the graphs objects as tensors
+    """
 
     node_feature_set = get_node_features(feature_names)
     
@@ -119,6 +138,14 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str],
     return data_list
 
 def get_node_features(node_features:list[str]):
+    """Selects the node feature names
+
+    Args:
+        node_features (list[str]): the names, e.g var and mean
+
+    Returns:
+        final_feature_set (list[str]): the names of the node features
+    """
     final_feature_set = []
     if 'var_bin' in node_features:
         final_feature_set += ['var_bin_21_1', 'var_bin_21_2','var_bin_21_3', 'var_bin_21_4',
@@ -139,3 +166,54 @@ def get_node_features(node_features:list[str]):
         print('No such feature set:', node_features)
     else:
         return final_feature_set
+    
+
+def create_gat_network(path):
+    """Transforms a multi edges into a single edge
+
+    Args:
+        path (str): path to network
+
+    Returns:
+        _type_: the gat network
+    """
+    network = nx.read_gml(path)
+
+    new_network = nx.Graph()
+
+    new_edges = []
+    for u,v in set(network.edges()):
+        new_edge = [u,v,{}]
+        for name, value in network[u][v].items():
+            if value['feature_name']:
+                new_edge[-1][value['feature_name']] = value['feature_value']
+        new_edges.append(new_edge)
+
+    for n in network.nodes(data=True):
+        new_network.add_node(n[0], **n[1])
+
+    new_network.add_edges_from(new_edges)
+    return new_network
+
+def transform_to_gat():
+    """
+    Transforms the networks from single edge to multi edge
+    """
+    #Transform all networks
+    file_list = [f for f in os.listdir('../data.nosync/networks_multi/') if '.gml' in f ]
+    for i in file_list:
+        G = create_gat_network(f"../data.nosync/networks_multi/{i}")
+        nx.write_gml(G, f"../data.nosync/networks_multi_gat/{i}")
+
+    #Transfrom datasets
+    for s in ['train', 'test', 'val']:
+        file_data = pd.read_csv(f'../data.nosync/networks_multi/{s}_set_files.csv')
+        files = file_data['file'].to_list()
+
+        file_data['file'] = file_data['file'].apply(lambda x: x.replace('networks_multi', 'networks_multi_gat'))
+        
+        for i in files:
+            G = create_gat_network(i)
+            nx.write_gml(G, i.replace('networks_multi', 'networks_multi_gat'))
+
+        file_data.to_csv(f'../data.nosync/networks_multi_gat/{s}_set_files.csv',index= False)
