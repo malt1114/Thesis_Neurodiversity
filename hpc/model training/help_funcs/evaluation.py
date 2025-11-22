@@ -458,14 +458,16 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
     if num_of_classes == 1:
         before_pca['label'] = before_pca['label'].apply(lambda x: 'TD' if 'TD' in x else 'Non-TD')
         hue_order = ['Non-TD', 'TD']
+        palette=["purple", "#C66526"]
     else:
         hue_order = ['ADHD', 'ASD', 'ASD+ADHD', 'TD']
+    
     sns.scatterplot(data=before_pca, 
                     x="PCA_1", 
                     y="PCA_2", 
                     hue = 'label',
                     ax = axes[0],
-                    palette = 'colorblind',
+                    palette = 'colorblind' if num_of_classes != 1 else palette,
                     hue_order = hue_order,
                     legend = False)
     
@@ -480,7 +482,7 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
                     y="PCA_2", 
                     hue = 'label',
                     ax = axes[1],
-                    palette = 'colorblind',
+                    palette = 'colorblind' if num_of_classes != 1 else palette,
                     hue_order = hue_order)
 
     axes[1].legend(title="Diagnosis", title_fontsize=13)
@@ -489,7 +491,7 @@ def get_pca_plots(yaml_file:str, model_file:str, drop_strategy:int = None, gat:b
     for ax in axes.flatten():
          ax.set_xlabel(ax.get_xlabel(), fontsize=14)
          ax.set_ylabel(ax.get_ylabel(), fontsize=14)
-         ax.tick_params(axis='both', labelsize=13)
+         ax.tick_params(axis='both', labelsize=13)        
 
     plot_name = yaml_file
     plot_name = plot_name.split('/')[1].split('.')[0]
