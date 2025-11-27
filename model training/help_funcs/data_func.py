@@ -42,8 +42,8 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str],
     else:
         class_dict = {'TD': 0, 'ASD-ADHD':1, 'ASD':2, 'ADHD':3}
 
-    file_list = pd.read_csv(f'data.nosync/networks_multi{"_gat" if GAT else ""}/{dataset}_set_files.csv')['file'].to_list()
-    meta_data = pd.read_csv(f'data.nosync/phenotypic/meta_data.csv')
+    file_list = pd.read_csv(f'../data.nosync/networks_multi{"_gat" if GAT else ""}/{dataset}_set_files.csv')['file'].to_list()
+    meta_data = pd.read_csv(f'../data.nosync/phenotypic/meta_data.csv')
     meta_data['Sub ID'] = meta_data['Sub ID'].apply(lambda x: str(x).zfill(7))
     meta_data['extended_dia'] = meta_data['Diagnosis'] + '-' + meta_data['Co-Diagnosis']
 
@@ -51,7 +51,7 @@ def load_dataset(dataset:str, num_of_classes:int, feature_names:list[str],
 
     for i in file_list:
         network_class = i.split('/')[-1].split('_')[3]
-        G = nx.read_gml(f'{i}')
+        G = nx.read_gml(f'../{i}')
 
         if GAT: 
             edges_to_remove = []

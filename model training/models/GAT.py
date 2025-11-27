@@ -60,7 +60,6 @@ class GAT(torch.nn.Module):
         super().__init__()
         #Set random seeds
         seed_everything(random_seed)
-        #set_seed(seed = random_seed)
 
         self.conv1 = AttentionConvLayer(in_ = in_, #number of features
                                         out_ = layer_1_out, 
