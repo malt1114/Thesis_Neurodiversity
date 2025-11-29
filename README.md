@@ -15,7 +15,7 @@ The data used in this paper, originates from the data sources above. However, du
 For more information about C-PAC and how to set up see: https://fcp-indi.github.io/docs/latest/user/quick.html
 
 # File Structure
-
+```
 .
 ├── C-PAC
 │   ├── Create job files.ipynb / Creates the SLURM jobs
@@ -54,7 +54,7 @@ For more information about C-PAC and how to set up see: https://fcp-indi.github.
 │   └── saved_models/ the best GAT and GCN models + hyperparameters
 │
 └── requirements.txt/ requirements for python enviorment
-
+```
 
 ## Use of Generative AI: 
 ChatGPT was used to aid in some of the plotting with Seaborne and Matplotlib, raw outputs were ammended and verified by the authors of this GitHub to ensure correctness. Example input: "Please change the font size on this graph".
