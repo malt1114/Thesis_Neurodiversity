@@ -193,95 +193,13 @@ def clean_scans(folder: str, hpc:bool, target_folder:str, mask_in, mac: bool = T
             np.savez_compressed(f"{clean_path}/{file.split('/')[-1][:-4]}", **roi_arrays, allow_pickle=True)
     pd.DataFrame(size_data, columns=['file', '#voxels']).to_csv(f'{clean_path}/#Number of voxels {mask_in}.csv')        
 
-def make_file_list_save(file_list:pd.DataFrame, set_name:str):
-    file_set_list = []
-    for idx, row in file_list.iterrows():
-        for i in range(row['run']):
-            #0010001_run-1_ADHD200_ADHD_17.gml
-            file_set_list.append(f"{row['participant'].zfill(7)}_run-{i+1}_{row['dataset']}_{row['diagnosis']}_{row['file_end']}")
-    pd.DataFrame(file_set_list, columns=['file']).to_csv(f'data.nosync/networks_multi/{set_name}_set_files.csv', index= False)
-
-def create_data_split(files:list[str], train_val_size:float):
-    participants = [i.split('_') for i in files]
-    participants = pd.DataFrame(participants, columns= ['participant', 'run', 'dataset', 'diagnosis', 'file_end'])
-    participants = participants.groupby(['participant', 'dataset', 'diagnosis', 'file_end']).count().reset_index()
-
-    to_remove = pd.read_csv('data.nosync/stats/head_movement/motion_summary_all_subjects.csv')
-    to_remove = to_remove[['Exclude', 'Dataset', 'Sub ID']]
-
-    #Remove one without the a sex
-    to_remove = pd.concat([to_remove, 
-                            pd.DataFrame([{'Exclude':True, 'Dataset':'ADHD200', 'Sub ID': 10044}])]
-                            ).reset_index(drop=True)
-    
-    to_remove['Sub ID'] = to_remove['Sub ID'].apply(lambda x: str(x).zfill(7))
-
-    participants = pd.merge(participants, to_remove, left_on=['dataset', 'participant'], right_on= ['Dataset', 'Sub ID'])
-    participants = participants[participants['Exclude'] != True]
-    participants = participants.drop(['Exclude', 'Dataset', 'Sub ID'], axis= 1)
-
-    #Make sure the participants are only present once
-    participants = participants.groupby(['participant', 'dataset', 'diagnosis', 'file_end']).count().reset_index()
-
-    datasets = participants.dataset.unique()
-
-    train, test, val = [], [], []
-
-    #For each dataset
-    for ds in datasets:
-        dataset_data = participants[participants['dataset'] == ds]
-        dataset_diag = dataset_data['diagnosis'].unique()
-        #for each diagnosis
-        for di in dataset_diag:
-            #Filter on diagnosis and get total count + dict
-            dataset_diagnosis_data = dataset_data[dataset_data['diagnosis'] == di]
-            dataset_diagnosis_data = dataset_diagnosis_data.sort_values('run')
-            run_count = dataset_diagnosis_data['run'].value_counts().to_dict()
-            num_of_runs = 0 
-            
-            #Calculate total number of scans
-            for key, value in run_count.items():
-                num_of_runs += key*value
-            
-            #Make list of idx and count
-            idx_list = list(zip(dataset_diagnosis_data.index.to_list(), dataset_diagnosis_data.run.to_list()))
-
-            #Make index lists
-            train_idx, test_idx, val_idx = [], [], []
-            train_count, test_count, val_count = 0, 0, 0
-
-            #Calculate test/val size
-            test_size, val_size = round(num_of_runs*train_val_size), round(num_of_runs*train_val_size)
-            
-            for i in idx_list:
-                if test_count < test_size:
-                    test_idx.append(i[0])
-                    test_count += i[1]
-                elif val_count < val_size:
-                    val_idx.append(i[0])
-                    val_count += i[1]
-                else:
-                    train_idx.append(i[0])
-                    train_count += i[1]
-
-            train.append(dataset_diagnosis_data[dataset_diagnosis_data.index.isin(train_idx)])
-            test.append(dataset_diagnosis_data[dataset_diagnosis_data.index.isin(test_idx)])
-            val.append(dataset_diagnosis_data[dataset_diagnosis_data.index.isin(val_idx)])
-            print(f"Train size: {train_count}, Test size: {test_count}, Val size: {val_count}")
-
-    train, test, val = pd.concat(train), pd.concat(test), pd.concat(val)
-    make_file_list_save(file_list = train, set_name = 'train')
-    make_file_list_save(file_list = test, set_name = 'test')
-    make_file_list_save(file_list = val, set_name = 'val')
 
 
 if __name__ =="__main__":
     import os
-    os.chdir("../")
-    file_list = os.listdir('data.nosync/networks_multi')
-    create_data_split(files = file_list, train_val_size=0.15)
+    os.chdir("../..")
 
-    """datasets = [
+    datasets = [
         ['ABIDEI', True, 'ABIDEI_7','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
         ['ABIDEI', True, 'ABIDEI_17','Yeo2011_17Networks_MNI152_FreeSurferConformed1mm_LiberalMask.nii', False],
         #ABIDE II
@@ -293,11 +211,11 @@ if __name__ =="__main__":
         ]
     
     with Parallel(n_jobs=6, verbose=-1) as parallel:
-            #Prepare the jobs
-            delayed_funcs = [delayed(lambda x:clean_scans(folder = x[0], 
-                                                         hpc = x[1], 
-                                                         target_folder=x[2], 
-                                                         mask_in = x[3], 
-                                                         mac=x[4]))(dataset) for dataset in datasets]
-            #Runs the jobs in parallel
-            parallel(delayed_funcs)"""
+        #Prepare the jobs
+        delayed_funcs = [delayed(lambda x:clean_scans(folder = x[0], 
+                                                        hpc = x[1], 
+                                                        target_folder=x[2], 
+                                                        mask_in = x[3], 
+                                                        mac=x[4]))(dataset) for dataset in datasets]
+        #Runs the jobs in parallel
+        parallel(delayed_funcs)

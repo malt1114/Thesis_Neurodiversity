@@ -86,6 +86,7 @@ def get_num_of_voxels_stats(num_of_roi:str, path_addon:str):
     roi_voxels.to_csv(f'../data{path_addon}/stats/num_of_voxels_pr_timestep_{num_of_roi}.csv')
 
 if __name__ =="__main__":
+    os.chdir('..')
     datasets = ['ABIDEI_7', 'ABIDEI_17', 
                 'ABIDEII_7', 'ABIDEII_17', 
                 'ADHD200_7', 'ADHD200_17']
@@ -96,5 +97,5 @@ if __name__ =="__main__":
                                                               mac = False))(dataset) for dataset in datasets]
             #Runs the jobs in parallel
             parallel(delayed_funcs)
-    get_num_of_voxels_stats(num_of_roi = '7', path_addon = "")
-    get_num_of_voxels_stats(num_of_roi = '17', path_addon = "")
+    get_num_of_voxels_stats(num_of_roi = '7', path_addon = ".nosync")
+    get_num_of_voxels_stats(num_of_roi = '17', path_addon = ".nosync")

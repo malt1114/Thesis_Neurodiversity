@@ -5,7 +5,7 @@ import networkx as nx
 from itertools import combinations
 
 import os
-os.chdir("..")
+os.chdir("../..")
 
 class FmriToNetwork():
 
@@ -164,20 +164,11 @@ class FmriToNetwork():
         print(f"Number of nodes: {network.number_of_nodes()}, Number of edges: {network.number_of_edges()}", flush= True)
 
         #Save the data
-        #TODO: Save network as
         nx.write_gml(network, f"data{self.hpc}/networks_multi_new/{self.subject_id}_{self.run}_{self.dataset}_{self.diagnosis}_{self.num_rois}.gml")
+
 if __name__ =="__main__":
-    """
-    FmriToNetwork(subject_id = 'test', 
-                    dataset = 'test', 
-                    diagnosis = 'test', 
-                    bins = [21, 42, 86], 
-                    num_rois = 17,
-                    mean_data = "data.nosync/clean/sub-0050952_ses-1_task-rest_run-1_space-MNI152NLin6ASym_desc-preproc_bold.npz",
-                    hpc=False).create_network()
-    """
     
-    file_data = pd.read_csv('data/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
+    file_data = pd.read_csv('data.nosync/phenotypic/subjects_with_meta_17.csv', index_col= 'Unnamed: 0')
     file_data['Co-Diagnosis'] = file_data['Co-Diagnosis'].apply(lambda x: '' if str(x) == 'nan' or str(x) == 'Other' else x)
     file_data['Full Diagnosis'] = file_data['Diagnosis'] + '-' + file_data['Co-Diagnosis']
     file_data['Full Diagnosis'] = file_data['Full Diagnosis'].apply(lambda x: x.replace('-', '') if x[-1] == '-' else x)
@@ -189,8 +180,8 @@ if __name__ =="__main__":
         FmriToNetwork(subject_id = sub[0], 
                     dataset = sub[1], 
                     diagnosis = sub[3], 
-                    bins = [21, 42, 86], 
+                    bins = [21, 42, 84], 
                     num_rois = 17,
                     mean_data = sub[2],
-                    hpc=True).create_network()
+                    hpc=False).create_network()
     

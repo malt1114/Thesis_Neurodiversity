@@ -60,7 +60,7 @@ def get_networks(dataset):
     return networks
 
 if __name__ =="__main__":
-    os.chdir("..")
+    os.chdir("../..")
     print(os.getcwd())
     #get train networks
     train_networks = get_networks(dataset = 'train')
